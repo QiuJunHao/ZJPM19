@@ -16,6 +16,7 @@ import project_classification from '@/components/project-preparation/project_cla
 import work_post from '@/components/project-preparation/work_post'
 import item from '@/components/project-preparation/item'
 import template_group_waiting from '@/components/project-preparation/template_group_waiting'
+import template_group from '@/components/project-preparation/template_group'
 import template_group_type from '@/components/project-preparation/template_group_type'
 
 import task from '@/components/schedule-task/task'
@@ -136,6 +137,9 @@ const router = new Router({
           path: '/template_group',
           name: 'template_group',
           component: template_group,
+        },
+
+        {
           path: '/template_group_waiting',
           name: 'template_group_waiting',
           component:template_group_waiting,

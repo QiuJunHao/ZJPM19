@@ -18,7 +18,7 @@
           circle
         ></el-button>
         <el-input
-          @keyup.enter.native="search()"
+          @keyup.enter.native="refreshData" v-model="condition"
           placeholder="请输入客户信息"
           style="width:300px;"
         >

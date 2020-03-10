@@ -1,6 +1,6 @@
 <template>
   <div class="center">
-    <el-dialog title="日历" :visible.sync="calen_visible" :close-on-click-modal="false" width="30%">
+    <el-dialog title="日历" :visible.sync="calen_visible" :close-on-click-modal="false" width="580px">
       <div slot="title" class="header-title">
         <span class="el-icon-date"> 日历</span>
       </div>
@@ -9,38 +9,19 @@
       </div>
     </el-dialog>
     <el-container class="page">
-      <el-header style="height:50px;">
+      <el-header style="height:50px;box-shadow: 0 0 4px 0 rgba(0,0,0,0.04);">
         <div class="aside-header">
           <div class="aside-logo"></div>
           <span style="margin:0 10px;">知匠项目管控系统</span>
           <i class="el-icon-s-home icon-color aside-home" @click="refreshPage"></i>
         </div>
         <div class="menu-contain">
-          <el-menu mode="horizontal" :default-active="url" @select="addBreadCrumb" style="height:50px;" router>
-            <!-- 单独的测试页面单独写，不经过权限加载 -->
-            <el-submenu index="1">
-              <template slot="title">测试</template>
-              <el-menu-item-group>
-                <el-menu-item index="test" route="/test">测试</el-menu-item>
-                <el-menu-item index="ScheduleTest" route="/ScheduleTest">计划测试</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">项目准备</template>
-              <el-menu-item-group>
-                <el-menu-item index="standardTask" route="/standardTask">标准任务</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">基础数据</template>
-              <el-menu-item-group>
-                <el-menu-item @click.native="openCalendar">日历</el-menu-item>
-                <el-menu-item index="dept" route="/dept">部门</el-menu-item>
-                <el-menu-item index="emp" route="/emp">人员</el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
+          <el-menu mode="horizontal" :default-active="activeTabName" @select="addBreadCrumb" text-color="#333"
+            active-text-color="#409EFF" style="height:50px;" router>
+            <!-- 单独的测试页面自己单独写，不经过权限加载(请勿上传) -->
+
             <!-- 权限树加载 -->
-            <!-- <menuTree :menuTreeItem="menuTreeList" /> -->
+            <menuTree :menuTreeItem="menuTreeList" />
           </el-menu>
         </div>
         <ul class="right-aside-head">
@@ -89,21 +70,31 @@
           </li>
         </ul>
       </el-header>
-      <el-header style="height:40px;" v-if="breadCrumbList.length">
+      <el-header style="height:30px;" v-if="breadCrumbList.breadCrumbList.length">
         <div class="breadCrumb">
-          <div style="font-size:15px;"><template v-for="(item, index) in breadCrumbList"><a v-if="index == 0"
-                :key="index" @click="refreshPage">&nbsp;{{ item.menu_name }}>&nbsp;</a><span :key="index"
-                v-else>&nbsp;{{ item.menu_name }}>&nbsp;</span></template></div>
+          <template v-for="(item, index) in breadCrumbList.breadCrumbList">
+            <a v-if="index == 0" :key="index" @click="refreshPage">&nbsp;{{ item.menu_name }}&nbsp;>&nbsp;</a>
+            <span v-else-if="index == breadCrumbList.breadCrumbList.length - 1" :key="index">
+              <el-select v-model="item.menu_link" size="mini" style="width:110px;" @change="changRouter">
+                <el-option v-for="array in breadCrumbList.selectArray" :key="array.menu_link" :label="array.menu_name"
+                  :value="array.menu_link">
+                </el-option>
+              </el-select>
+            </span>
+            <span v-else :key="index">&nbsp;{{ item.menu_name }}&nbsp;>&nbsp;</span>
+          </template>
         </div>
       </el-header>
-      <el-main style="margin:0;padding:0;background:#ECF5EF;" class="backTop">
-        <el-card>
-          <keep-alive>
-            <router-view v-if="$route.meta.keepAlive === true" />
-          </keep-alive>
-          <router-view v-if="$route.meta.keepAlive !== true" />
+      <el-main class="backTop">
+        <el-card class="mainContentCard" shadow="never">
+          <div class="mainContent">
+            <keep-alive>
+              <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
+            </keep-alive>
+            <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
+          </div>
           <div v-if="activeTabName == 'main'">
-            <div style="min-height:1500px;">
+            <div style="height:1500px;background-color:white;">
               主页内容
               主页内容
               主页内容
@@ -142,7 +133,6 @@ export default {
   },
   data() {
     return {
-      defaultUrl: "",
       asideStatus: false, //false:菜单栏处于展开状态； true：菜单栏处于收起状态
       asideWidth: "200px",
       calen_visible: false,
@@ -182,14 +172,14 @@ export default {
       return text;
     }
   },
+  watch: {},
   methods: {
     ...mapMutations("navTabs", [
-      "addTab",
+      "setActiveTabName",
       "addBreadCrumb",
       "setMenuTreeList",
       "isContainMenu"
     ]),
-    ...mapActions("navTabs", ["closeTab", "closeToTab"]),
     //全屏事件
     screenfull() {
       if (!screenfull.enabled) {
@@ -218,12 +208,19 @@ export default {
       });
       //this.$router.go(0);//刷新页面
     },
+    //判断文字是否超长，超长显示省略号
     isReduce(text) {
       var canvas = document.createElement("canvas");
       var context = canvas.getContext("2d");
       context.font = "14px Microsoft YaHei";
       var dimension = context.measureText(text);
       return dimension.width > 290;
+    },
+    changRouter(value) {
+      this.$router.push({
+        path: "/" + value
+      });
+      this.addBreadCrumb(value);
     },
     openCalendar() {
       this.calen_visible = true;
@@ -232,14 +229,6 @@ export default {
     closeCalendar() {
       this.calen_visible = false;
       //this.$router.go(0);//刷新页面
-    },
-    //点击标签页触发的事件
-    getTab(val) {
-      this.$store.commit("navTabs/setActiveUrlName", val.name);
-    },
-    //获取当前路径,刷新用
-    getPath() {
-      this.defaultUrl = window.location.href.split("#/")[1];
     },
     changeAside() {
       this.asideStatus = !this.asideStatus;
@@ -253,33 +242,49 @@ export default {
         document.getElementById("asideControll").innerHTML = "&#xe65f;";
       }
     },
-    //获得菜单数组并传入store ,await不能阻塞主线程，这里可能没起作用
-    async getMenuTree() {
+    getComponent(path) {
+      return resolve => {
+        require.ensure([], require => {
+          resolve(require("@/components/" + path));
+        });
+      };
+    },
+    //获得菜单数组并传入store
+    getMenuTree() {
       this.$store.commit("navTabs/emptyMenuTreeList");
-      await this.z_get({
-        userid: JSON.parse(Cookies.get("userInfo")).userId
-      }).then(res => {
-        if (res.data.children.length > 0) {
-          this.setMenuTreeList(res.data.children);
-          //只有一个菜单，默认加载
-          if (res.data.children.length == 1) {
-            if (
-              res.data.children[0].menu_type == "menu" &&
-              (!res.data.children[0].children ||
-                res.data.children[0].children.length == 0)
-            ) {
-              this.addTab(res.data.children[0].menu_link);
+      this.z_get("api/Home/userMenuTree")
+        .then(res => {
+          if (res.data.length > 0) {
+            this.setMenuTreeList(res.data);
+            var main = this.$router.options.routes.filter(
+              item => item.name == "main"
+            )[0];
+            for (var i = 0; i < this.menuTreeListFlatten.length; i++) {
+              if (this.menuTreeListFlatten[i].menu_link) {
+                var menu_link = this.menuTreeListFlatten[i].menu_link;
+                main.children.push({
+                  path: "/" + menu_link,
+                  name: menu_link,
+                  component: this.getComponent(menu_link)
+                });
+              }
             }
+            this.$router.addRoutes([main]);
+            //加载角标
+            this.getIconAll();
+          } else {
+            this.$alert("没有菜单权限，请联系管理员配置", "提示", {
+              confirmButtonText: "确定",
+              type: "warning"
+            });
           }
-          //加载角标
-          this.getIconAll();
-        } else {
-          this.$alert("没有菜单权限，请联系管理员配置", "提示", {
+        })
+        .catch(res => {
+          this.$alert("获取菜单失败", "提示", {
             confirmButtonText: "确定",
-            type: "success"
+            type: "error"
           });
-        }
-      });
+        });
     },
     //获取角标在获取权限之后
     getIconAll() {}
@@ -291,29 +296,13 @@ export default {
       "menuTreeList",
       "menuTreeListFlatten"
     ]),
-    url() {
-      let index = this.$store.state.navTabs.activeUrlName;
-
-      return index;
-    },
-    activeTabName: {
-      get() {
-        return this.$store.state.navTabs.activeTabName;
-      },
-      set(value) {
-        this.$store.commit("navTabs/setActiveUrlName", value);
-        this.$router.push({
-          path: "/" + this.$store.state.navTabs.activeUrlName
-        });
-      }
+    activeTabName() {
+      return this.$store.state.navTabs.activeTabName;
     }
   },
-  mounted() {},
-  beforeCreate() {},
-  created() {
-    //this.getMenuTree(); //获得菜单权限树,获取角标在后去权限之后
-    this.getPath();
-    this.addTab("main");
+  mounted() {
+    this.setActiveTabName("main");
+    this.getMenuTree(); //获得菜单权限树,获取角标在后去权限之后
   }
 };
 </script>
@@ -403,17 +392,21 @@ export default {
 }
 .breadCrumb {
   width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #ebeef5;
+  padding: 2px 15px;
+  background-color: #f8f8f8;
   user-select: none;
   box-sizing: border-box;
 }
 .breadCrumb a {
   cursor: pointer;
   color: #000;
+  font-size: 14px;
 }
 .breadCrumb a:hover {
   color: #409eff !important;
+}
+.breadCrumb span {
+  font-size: 14px;
 }
 .messageBox {
   width: 100%;
@@ -451,35 +444,59 @@ export default {
 }
 .unReadMessage {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 10px;
   width: 8px;
   height: 8px;
   color: #fff;
   background-image: linear-gradient(#54a3ff, #006eed);
   background-clip: padding-box;
-  border: 1px solid #24292e;
   border-radius: 50%;
+}
+.mainContentCard {
+  min-height: 100%;
+  background-color: #eee;
+  box-sizing: border-box;
+}
+.mainContent {
+  display: flex;
+}
+.commonStyle {
+  margin: 0 auto;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  background-color: white;
+}
+.backTop {
+  margin: 0;
+  padding: 0;
+  background-color: #ecf5ef;
 }
 </style>
 
 <style>
 /* 全局样式放在这 */
-/* 水平样式 */
+.tbar {
+  margin-bottom: 10px;
+  padding: 5px 15px;
+  background-color: #eee;
+}
+/* 水平菜单样式 */
 .el-menu--horizontal > .el-menu-item,
 .el-menu--horizontal > .el-submenu .el-submenu__title {
   height: 50px !important;
   line-height: 50px !important;
+  padding: 0 15px !important;
 }
 .el-menu--horizontal > div > .el-menu-item,
 .el-menu--horizontal > div > .el-submenu .el-submenu__title {
   height: 50px !important;
   line-height: 50px !important;
+  padding: 0 15px !important;
 }
 .el-menu--horizontal > div > .el-submenu {
   float: left !important;
 }
-/* 一级菜单的样式 */
 .el-menu--horizontal > div > .el-menu-item {
   float: left !important;
   margin: 0 !important;
@@ -498,9 +515,13 @@ export default {
 .el-menu--horizontal > div > .el-menu .el-menu-item:hover {
   background: #f5f7fa !important;
 }
+.el-menu--horizontal > div > .el-submenu .el-submenu__title {
+  border-bottom: 2px solid transparent !important;
+  color: #333 !important;
+}
 .el-menu--horizontal > div > .el-submenu.is-active .el-submenu__title {
   border-bottom: 2px solid #409eff !important;
-  color: #303133 !important;
+  color: #409eff !important;
 }
 /* 解决下拉三角图标 */
 .el-menu--horizontal > div > .el-submenu .el-submenu__icon-arrow {
@@ -509,13 +530,7 @@ export default {
   margin-left: 8px !important;
   margin-top: -3px !important;
 }
-/* 解决无下拉菜单时 不对齐问题 */
-.el-menu--horizontal > div > .el-submenu .el-submenu__title {
-  height: 60px !important;
-  line-height: 60px !important;
-  border-bottom: 2px solid transparent !important;
-  color: #909399 !important;
-}
+/* 滚动条样式 */
 .el-scrollbar .el-scrollbar__wrap {
   overflow-x: hidden !important;
 }
@@ -523,7 +538,7 @@ export default {
   margin-bottom: 0px !important;
 }
 .el-menu-item-group__title {
-  padding: 4px 0 !important;
+  padding: 1px 0 !important;
 }
 .el-card__header {
   padding: 10px !important;
@@ -531,12 +546,15 @@ export default {
 .el-card__body {
   padding: 10px !important;
 }
+.mainContentCard .el-card__body {
+  padding: 10px 15px !important;
+}
 .el-dialog__body {
   padding: 20px !important;
 }
 .el-table td,
 .el-table th {
-  padding: 6px 0 !important;
+  padding: 5px 0 !important;
 }
 .el-badge__content {
   border: none !important;
@@ -552,8 +570,5 @@ export default {
 }
 .el-dropdown-menu__item {
   line-height: 25px !important;
-}
-.el-form-item {
-  margin-bottom: 10px !important;
 }
 </style>

@@ -90,6 +90,14 @@ let dateFormat = function (time, format) {
     }
     return date;
 }
+let yesOrNo=function(value,format){
+    if (format=="是否"){
+    if(value==1){
+      return "是"
+   }
+   else return "否"
+   }
+}
 
 function dateFilter(value) {
     if (!value || value == "9999-12-31") return "";
@@ -128,5 +136,6 @@ export {
     toLocale,
     dateFormat,
     dateFilter,
+    yesOrNo,
     renderFilter
 }

@@ -52,19 +52,23 @@
                   <el-table-column type="index" width="40" align="center">
                   </el-table-column>
                  
-                  <el-table-column prop="ds_name" label="班次名称" align="center" width="130"></el-table-column>
-                   <el-table-column prop="ds_starttime" label="开始时间" align="center" width="130">
+                  <el-table-column prop="ds_name" label="班次名称" align="center" width="80"></el-table-column>
+                   <el-table-column prop="ds_starttime" label="开始时间" align="center" width="80">
                        <template slot-scope="scope">
                 <span>{{ scope.row.ds_starttime|dateFormat("HH:mm")}}</span>
               </template>
                    </el-table-column>
-                    <el-table-column prop="ds_endtime" label="结束时间" align="center" width="130">
+                    <el-table-column prop="ds_endtime" label="结束时间" align="center" width="80">
                         <template slot-scope="scope">
                 <span>{{ scope.row.ds_endtime|dateFormat("HH:mm")}}</span>
               </template>
                     </el-table-column>
-                     <el-table-column prop="is_report" label="是否报工" align="center" width="130"></el-table-column>
-                       <el-table-column prop="ds_period" label="时长" align="center" width="130"></el-table-column>
+                     <el-table-column prop="is_report" label="是否报工" align="center" width="120">
+                       <template slot-scope="scope">
+                <span>{{ scope.row.is_report|yesOrNo("是否")}}</span>
+              </template>
+                     </el-table-column>
+                       <el-table-column prop="ds_period" label="时长" align="center" width="60"></el-table-column>
                   <el-table-column label="操作" width="140" prop="handle">
                     <template slot-scope="scope">
                       <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editItemShow(scope.row)">
@@ -87,8 +91,8 @@
       :visible.sync="addTaskVisiable">
       <zj-form size="small" :newDataFlag='addTaskVisiable' :model="shiftGroupModel" label-width="100px" ref="taskForm"
         :rules="add_rules">
-        <el-form-item label="班次名称" prop="sg_name">
-          <el-input class="formItem" v-model="shiftGroupModel.sg_name" placeholder="请填写标记类型名称">
+        <el-form-item label="班次组名称" prop="sg_name">
+          <el-input class="formItem" v-model="shiftGroupModel.sg_name" placeholder="班次组名称">
           </el-input>
         </el-form-item>
         <el-form-item label="班次说明" prop="sg_note">
@@ -106,17 +110,17 @@
     <!-- 新增班次明细 -->
     <el-dialog :width=" DayShiftModelList.length? '1000px':'550px'" title="新增班次明细" :close-on-click-modal="false"
       :visible.sync="addDayShiftVisible">
-       <zj-form size="small" :newDataFlag='addDayShiftVisible' :model="DayShiftModel" label-width="100px"
+       <el-form size="small" :newDataFlag='addDayShiftVisible' :model="DayShiftModel" label-width="100px"
         ref="DayShiftForm" >
  <el-form-item label="班次名称" prop="ds_name">
-          <el-input class="formItem" v-model="DayShiftModel.ds_name" placeholder="请填写标记类型名称">
+          <el-input class="formItem" v-model="DayShiftModel.ds_name" placeholder="班次名称(早，中，晚，全白...)">
           </el-input>
         </el-form-item>
 
   <el-form-item label="开始时间" prop="ds_starttime" >
             <el-time-select
     placeholder="起始时间"
-    v-model="starttime1"
+    v-model="starttime"
     format="HH:mm"
      value-format="HH:mm"
     :picker-options="{
@@ -131,31 +135,30 @@
                 
   <el-time-select
     placeholder="结束时间"
-    v-model="endtime1"
+    v-model="endtime"
    
     :picker-options="{
       start: '06:00',
       step: '00:15',
       end: '23:30',
-      minTime: starttime1
+      minTime: starttime
     }">
   </el-time-select>
         </el-form-item>
 
         <el-form-item label="是否报工" prop="is_report">
-          <el-input class="formItem" type="textarea" :rows="2" v-model="DayShiftModel.is_report" placeholder="是否报工">
-          </el-input>
+          <el-checkbox v-model="DayShiftModel.is_report">是</el-checkbox>
+         
         </el-form-item>
         <el-form-item label="时长" prop="ds_period">
-          <el-input class="formItem" type="textarea" :rows="2" v-model="DayShiftModel.ds_period" placeholder="时长">
-          </el-input>
+           {{timeRange(starttime,endtime) }}h
         </el-form-item>
         <el-form-item style="text-align:center;margin-right:100px;">
           <el-button size="medium" @click="addDayShiftVisible = false">取&nbsp;&nbsp;消</el-button>
           <el-button type="primary" size="medium" @click="onSaveDayShiftClick" style="margin-left:30px;">保&nbsp;&nbsp;存
           </el-button>
         </el-form-item>
-      </zj-form>
+      </el-form>
     </el-dialog>
 
   </div>
@@ -166,6 +169,7 @@ export default {
   name: "shift_group",
   data() {
     return {
+      
       limit: 10,
       currentPage: 1,
       total: 0,
@@ -196,8 +200,8 @@ export default {
       loading: false,
       loading2: false,
       loading3: false,
-      starttime1:"06:00",
-      endtime1:"12:00",
+      starttime:"06:00",
+      endtime:"12:00",
       add_rules: {
         st_name: [
           { required: true, message: "请填写任务名称", trigger: "blur" }
@@ -222,7 +226,14 @@ export default {
 //       }
 //     }
 //   },
+//  computed: {
+    
+//   },
   methods: {
+  timeRange(val1,val2) {
+        this.DayShiftModel.ds_period=((new Date("2020-01-01 "+val2) - new Date("2020-01-01 "+val1)) / 1000 / 60 / 60).toFixed(2);
+       return ((new Date("2020-01-01 "+val2) - new Date("2020-01-01 "+val1)) / 1000 / 60 / 60).toFixed(2)
+    },
     //刷新任务树
     refreshHead() {
       this.taskData = [];
@@ -317,8 +328,8 @@ export default {
         st_note: ""
       };
       this.addOrNot = true;
-      this.starttime1="08:00",
-      this.endtime1="18:00",
+      this.starttime="08:00",
+      this.endtime="18:00",
       this.addTaskVisiable = true;
     },
     //保存新增/编辑任务
@@ -420,27 +431,24 @@ export default {
         is_report: 0,
         ds_period:0,
       };
-      this.starttime1="08:00";
-      this.endtime1="18:00";
+      this.starttime="08:00";
+      this.endtime="18:00";
       this.addDayShiftText = "新增班次";
       this.addOrNot = true;
      this.addDayShiftVisible = true;
     },
     //保存/编辑选中班次
     onSaveDayShiftClick() {
-      let s1="2020-01-01 "+this.starttime1;
-      let e1="2020-01-01 "+this.endtime1;
-    console.log(s1);
-    console.log(e1);
-
-    this.DayShiftModel.ds_starttime= new Date(s1);
-    console.log(this.DayShiftModel.ds_starttime);
-    this.DayShiftModel.ds_endttime=new Date(e1);
-    console.log(this.DayShiftModel.ds_endttime);
+      let config={
+        params:{
+         starttime:this.starttime,
+         endtime:this.endtime
+        }
+      }
       this.$refs.DayShiftForm.validate(valid => {
         if (valid) {
           if (this.addOrNot) {
-          this.z_post("api/day_shift", this.DayShiftModel)
+          this.z_post("api/day_shift", this.DayShiftModel ,config)
               .then(res => {
                 this.$message({
                   message: "新增成功!",
@@ -459,9 +467,8 @@ export default {
            
           } else {
             //修改
-            this.DayShiftModel.UpdateColumns = this.$refs.DayShiftForm.UpdateColumns;
-            if (this.DayShiftModel.UpdateColumns) {
-              this.z_put("api/day_shift", this.DayShiftModel)
+         
+              this.z_put("api/day_shift", this.DayShiftModel ,config)
                 .then(res => {
                   this.$message({
                     message: "编辑成功!",
@@ -477,9 +484,7 @@ export default {
                     type: "error"
                   });
                 });
-            } else {
-            
-            }
+           
           }
         }
       });
@@ -491,8 +496,8 @@ export default {
       this.addOrNot = false;
       this.addDayShiftText = "编辑班次明细";
      this.addDayShiftVisible = true;
-     this.starttime1=this.dateFormat(this.DayShiftModel.ds_starttime,"HH:mm");
-      this.endtime1=this.dateFormat(this.DayShiftModel.ds_endtime,"HH:mm");
+     this.starttime=this.dateFormat(this.DayShiftModel.ds_starttime,"HH:mm");
+      this.endtime=this.dateFormat(this.DayShiftModel.ds_endtime,"HH:mm");
     },
    
     

@@ -94,7 +94,7 @@
 
 
     <el-dialog :title="addCustText" :visible.sync="custFormVisible" width="30%" close-on-click-model="false" @closed="refreshForm">
-  <zj-form :model="custModel" :rules="rules"  label-width="120px" label-position="right" style="width:400px" ref="custForm" >
+  <zj-form  :newDataFlag="custFormVisible" :model="custModel" :rules="rules"  label-width="120px" label-position="right" style="width:400px" ref="custForm" >
     <el-form-item label="客户代码" prop="c_code">
       <el-input v-model="custModel.c_code" autocomplete="off"></el-input>
     </el-form-item>
@@ -278,9 +278,11 @@ export default {
                   confirmButtonText: "确定",
                   type: "error"
                 });
+
               });
           } else {
             this.custModel.UpdateColumns = this.$refs.custForm.UpdateColumns;
+            console.log(this.custModel)
               this.z_put("api/customer", this.custModel)
                 .then(res => {
                   this.$message({

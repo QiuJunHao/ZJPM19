@@ -85,6 +85,9 @@ let dateFormat = function (time, format) {
     if (format == "yyyy-MM-dd") {
         date = year + "-" + month + "-" + day;
     }
+    if(format=="HH:mm"){
+        date = hour + ":" + minute;
+    }
     return date;
 }
 

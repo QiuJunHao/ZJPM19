@@ -17,12 +17,12 @@
           @select-all="handleSelectAll" @row-click="handleRowClick">
           <el-table-column type="selection" width="55" align="center"></el-table-column>
          
-          <el-table-column prop="tgt_id" label="模板类型编号" align="center" width="120"></el-table-column>
-          <el-table-column prop="tgt_name" label="模板类型名称" align="center" width="150"></el-table-column>
+          <el-table-column prop="tgt_id" label="模板类型编号" align="left" width="180" sortable></el-table-column>
+          <el-table-column prop="tgt_name" label="模板类型名称" align="left" width="180"></el-table-column>
                    
-          <el-table-column prop="tgt_note" label="模板类型说明" align="center" width="150"></el-table-column>
+          <el-table-column prop="tgt_note" label="模板类型说明" align="left" ></el-table-column>
           
-          <el-table-column label="操作" width="150" prop="handle">
+          <el-table-column label="操作" width="180" prop="handle">
             <template slot-scope="scope">
               <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTemplateShow(scope.row)">
               </el-button>
@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     refreshData() {
-      this.z_get("api/template_group_type")
+      this.z_get("api/template_group_type", { condition: this.condition })
         .then(res => {
           //this.deptDataFilter = res.dict.dept_id;
           this.tgtData = res.data;
@@ -182,7 +182,7 @@ export default {
     addNewTemplateTypeGroup() {
         this.addgptText = "新增模板类型";
         this.templateGroupTypeModel = {
-            tgt_id: "",
+            tgt_id: 0,
             tgt_name:"",
             tgt_note:""
       };
@@ -393,7 +393,7 @@ onDeleteClick(list) {
 
 <style scoped>
 .template_group_type {
-  width: 100%;
+  width: 1100px;
 }
 .tbar {
   margin-bottom: 10px;

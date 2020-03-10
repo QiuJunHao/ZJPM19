@@ -3,7 +3,7 @@
     <div class="topLayout">
       <div class="tbar">
         <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
-        <el-input @keyup.enter.native="refreshData" placeholder="请输入组织模板编号或组织模板名称" v-model="condition" clearable style="width:300px;">
+        <el-input @keyup.enter.native="refreshData" placeholder="请输入组织模板名称" v-model="condition" clearable style="width:300px;">
           <el-button @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
         </el-input>
         <el-button type="primary" style="margin-left:10px;" @click="addNewTemplateGroup()">新增组织结构模板</el-button>
@@ -17,9 +17,9 @@
           @select-all="handleSelectAll" @row-click="handleRowClick">
           <el-table-column type="selection" width="55" align="center"></el-table-column>
           <el-table-column prop="tg_id" label="组织模板编号" align="center" width="120"></el-table-column>
-          <el-table-column prop="tgt_id" label="模板类型编号" align="center" width="120"></el-table-column>
+          <el-table-column prop="wp_id" label="岗位编号" align="center" width="90"></el-table-column>
           <el-table-column prop="tem_tg_id" label="项目组_组织模板编号" align="center" width="180"></el-table-column>
-          <el-table-column prop="wp_id" label="角色编号" align="center" width="90"></el-table-column>
+          <el-table-column prop="tgt_id" label="模板类型编号" align="center" width="120"></el-table-column>
           <el-table-column prop="tg_name" label="组织模板名称" align="center" width="120"></el-table-column>             
           <el-table-column prop="tg_node_type" label="节点类型（人/组织）" align="center" width="180"></el-table-column>
           
@@ -142,7 +142,7 @@ export default {
   },
   methods: {
     refreshData() {
-      this.z_get("api/template_group")
+      this.z_get("api/template_group", { condition: this.condition })
         .then(res => {
           //this.deptDataFilter = res.dict.dept_id;
           this.tgData = res.data;
@@ -195,7 +195,7 @@ export default {
     addNewTemplateGroup() {
         this.addgpText = "新增组织结构模板";
         this.templateModel = {
-            tg_id: "",
+            tg_id: 0,
             tgt_id:"",
             tem_tg_id:"",
             wp_id:"",

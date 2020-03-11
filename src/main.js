@@ -44,7 +44,7 @@ Object.keys(custom).forEach(key => {
 
 //请求拦截
 Axios.interceptors.request.use(config => {
-  config.headers.Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoic3RyaW5nIiwiZXhwIjoxNzYzMzgxOTIyLCJpc3MiOiJ6aGlqaWFuZ2tlamkuY24iLCJhdWQiOiJ6aGlqaWFuZ2tlamkifQ.O1jF3WYUIrQoqa4FA9jGfsxJeTlzYKa-O78kpnonkhs"
+  config.headers.Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoic3RyaW5nIiwidXNlcl9pZCI6IjAiLCJleHAiOjE3NjM3NzkxNjIsImlzcyI6InpoaWppYW5na2VqaS5jbiIsImF1ZCI6InpoaWppYW5na2VqaSJ9.L6Dvq0xK5h7Yj495JIWgPdbkJWnBvZRXq_dFcC7V2Tc"
   //在axios中传入config，配置一个参数来控制。如果loading为false，则不需要loading
   if (config.method === 'get') {
     if (config.config != undefined && config.config.loading != undefined && config.config.loading == false)

@@ -40,7 +40,7 @@
             <el-table-column prop="st_type" label="类别" align="center" width="100">
               <template slot-scope="scope">{{scope.row.st_type | stTypeTrans}}</template>
             </el-table-column>
-            <el-table-column prop="st_note" label="说明" align="center"></el-table-column>
+            <el-table-column prop="st_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column label="操作" width="140" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
@@ -78,7 +78,7 @@
                   <el-table-column prop="item_no" label="物料编码" align="center" width="130"></el-table-column>
                   <el-table-column prop="sti_quantity" label="数量" align="center" width="90"></el-table-column>
                   <el-table-column prop="item_unit" label="单位" align="center" width="100"></el-table-column>
-                  <el-table-column prop="sti_note" label="任务备注" align="center"></el-table-column>
+                  <el-table-column prop="sti_note" label="任务备注" align="center" show-overflow-tooltip></el-table-column>
                   <el-table-column label="操作" width="140" prop="handle">
                     <template slot-scope="scope">
                       <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editItemShow(scope.row)">
@@ -117,7 +117,7 @@
                     <template slot-scope="scope">{{scope.row.ddt_id | renderFilter(dataTypeFilter)}}</template>
                   </el-table-column>
                   <el-table-column prop="std_quantity" label="数量(份)" align="center" width="90"></el-table-column>
-                  <el-table-column prop="std_note" label="资料说明" align="center"></el-table-column>
+                  <el-table-column prop="std_note" label="资料说明" align="center" show-overflow-tooltip></el-table-column>
                   <el-table-column label="操作" width="140" prop="handle">
                     <template slot-scope="scope">
                       <el-button type="primary" icon="el-icon-edit" size="mini" circle
@@ -211,7 +211,7 @@
               <el-table-column prop="item_name" label="物料名称" align="center" width="200"></el-table-column>
               <el-table-column prop="item_specification" label="描述" align="center"></el-table-column>
             </el-table>
-            <div style="margin:0 25%;">
+            <div style="margin:0 15%;">
               <el-pagination @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-size="limit"
                 layout="total, prev, pager, next, jumper" :total="total"></el-pagination>
             </div>
@@ -416,7 +416,6 @@ export default {
     refreshData() {
       this.taskData = [];
       this.currentRow = {};
-      this.bottomDataShow = false;
       this.refreshBottom();
       this.z_get("api/standard_task/treeList", { condition: this.condition })
         .then(res => {
@@ -479,6 +478,7 @@ export default {
       this.taskItemData = [];
       this.dataCondition = "";
       this.taskDataData = [];
+      this.bottomDataShow = false;
     },
     search() {
       this.condition = "";
@@ -635,11 +635,15 @@ export default {
     },
     //确认删除任务
     onDeleteClick(list) {
-      this.$confirm("是否删除？节点下的子节点将一并删除！", "提示", {
-        confirmButtonText: "是",
-        cancelButtonText: "否",
-        type: "warning"
-      })
+      this.$confirm(
+        "是否删除？节点下的子节点及各节点的物料与资料需求将一并删除！",
+        "提示",
+        {
+          confirmButtonText: "是",
+          cancelButtonText: "否",
+          type: "warning"
+        }
+      )
         .then(() => {
           this.z_delete("api/standard_task/list", { data: list })
             .then(res => {
@@ -705,38 +709,31 @@ export default {
     },
     //保存新增物料需求
     onSaveItemListClick() {
-      if (this.taskItemModelList.length > 0) {
-        for (var i = 0; i < this.taskItemModelList.length; i++) {
-          if (!this.taskItemModelList[i].sti_quantity) {
-            this.$alert("物料" + (i + 1) + "数量未填写", "提示", {
-              confirmButtonText: "确定",
-              type: "warning"
-            });
-            return;
-          }
-        }
-        this.z_post("api/standard_task_item/list", this.taskItemModelList)
-          .then(res => {
-            this.$message({
-              message: "新增成功!",
-              type: "success",
-              duration: 1000
-            });
-            this.addTaskItemVisible = false;
-            this.refreshItemData();
-          })
-          .catch(res => {
-            this.$alert("新增失败!", "提示", {
-              confirmButtonText: "确定",
-              type: "error"
-            });
+      for (var i = 0; i < this.taskItemModelList.length; i++) {
+        if (!this.taskItemModelList[i].sti_quantity) {
+          this.$alert("物料" + (i + 1) + "数量未填写", "提示", {
+            confirmButtonText: "确定",
+            type: "warning"
           });
-      } else {
-        this.$alert("为选中任何物料!", "提示", {
-          confirmButtonText: "确定",
-          type: "warning"
-        });
+          return;
+        }
       }
+      this.z_post("api/standard_task_item/list", this.taskItemModelList)
+        .then(res => {
+          this.$message({
+            message: "新增成功!",
+            type: "success",
+            duration: 1000
+          });
+          this.addTaskItemVisible = false;
+          this.refreshItemData();
+        })
+        .catch(res => {
+          this.$alert("新增失败!", "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
     },
     //显示编辑物料需求
     editItemShow(row) {
@@ -1003,9 +1000,6 @@ export default {
 <style scoped>
 .standard-task {
   width: 1100px;
-}
-.formItem {
-  width: 300px;
 }
 .formItem2 {
   width: 200px;

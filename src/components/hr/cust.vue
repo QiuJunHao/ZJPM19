@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="custTypePanel">
+    <!--<div class="custTypePanel">
       <div style="float:left;margin:2px 10px 2px 50px">客户分类</div>
 
       <el-button icon="el-icon-plus" circle size="mini"></el-button>
       <el-button icon="el-icon-minus" circle size="mini"></el-button>
-    </div>
+    </div>-->
 
     <div class="custFormPanel">
       
@@ -16,6 +16,7 @@
           title="刷新"
           size="mini"
           circle
+          @click="search"
         ></el-button>
         <el-input
           @keyup.enter.native="refreshData" v-model="condition"
@@ -36,20 +37,20 @@
         <el-button type="primary" size="small">导入</el-button>
       </div>
 
-      <el-table :data="tableData" height="680px" border style="width: 100% "  row-key="c_no">
-        <el-table-column type="index" label="序号" width="100" align="center">
+      <el-table :data="tableData" height="680px"  border style="width:100% "  row-key="c_no" tooltip-effect="dark">
+        <el-table-column type="index" label="序号" width="120" align="center">
         </el-table-column>
         <el-table-column
           prop="c_code"
           label="客户代码"
-          width="180"
+          width="120"
           align="center"
         >
         </el-table-column>
         <el-table-column
           prop="c_name"
           label="客户名称"
-          width="150"
+          width="140"
           align="center"
         >
         </el-table-column>
@@ -70,22 +71,21 @@
         <el-table-column
           prop="c_Importance_level"
           label="客户重要程度"
-          width="150"
+          width="120"
           align="center">
         </el-table-column>
-        <el-table-column label="操作" width="220" align="center">
+        <el-table-column label="操作" width="150" align="center">
           <template slot-scope="scope">
-            <el-button size="mini"
-              >详情</el-button>
+            <!--<el-button size="mini"
+              >详情</el-button>-->
             
-            <el-button size="mini" @click="editCustShow(scope.row)"
-              >编辑</el-button>
+            <el-button type="primary" icon="el-icon-edit" size="mini" circle  @click="editCustShow(scope.row)"
+              ></el-button>
             
             <el-button
-              size="mini"
-              type="danger"
+              type="danger" icon="el-icon-delete" size="mini" circle
               @click="deleteOne(scope.row)"
-              >删除</el-button>
+              ></el-button>
             
           </template>
         </el-table-column>
@@ -196,7 +196,7 @@ export default {
     refreshData() {
       this.z_get("api/customer", { condition: this.condition })
         .then(res => {
-          //this.custDataFilter = res.dict.c_no;
+         // this.custDataFilter = res.dict.c_name;
           this.tableData = res.data;
         })
         .catch(res => {});
@@ -222,7 +222,7 @@ export default {
     //编辑数据
     editCustShow(row) {
       this.custModel = JSON.parse(JSON.stringify(row));
-     
+    
       this.addCustText = "编辑客户信息";
       this.addOrNot = false;
       this.custFormVisible = true;
@@ -248,9 +248,9 @@ export default {
             });
     },
 
-     filterDeptName(id) {
+     filterCustName(c_code) {
       var name = id;
-      var cust = this.custDataFilter.filter(item => item.value == id);
+      var cust = this.custDataFilter.filter(item => item.value == c_code);
       if (cust.length) {
         name = cust[0].display;
       }
@@ -329,10 +329,11 @@ export default {
 }
 
 .custFormPanel {
-  position: absolute;
+ /*position: absolute;
   top: 80px;
   left: 230px;
-  right: 0px;
+  right: 0px;*/
+  width:1100px;
 }
 .tbar {
   margin: 10px;

@@ -22,7 +22,7 @@
       <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
         <div class="tbar">
           <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="searchTemplate"></el-button>
-          <el-input size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入物料名称" v-model="condition"
+          <el-input size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称" v-model="condition"
             clearable style="width:250px;">
             <el-button size="small" @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
           </el-input>

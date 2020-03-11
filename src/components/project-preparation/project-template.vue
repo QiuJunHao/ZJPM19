@@ -119,7 +119,7 @@
       <zj-form size="small" :newDataFlag='addTemplateVisible' :model="templateModel" label-width="100px"
         ref="templateForm" :rules="add_rules">
         <el-form-item label="所属分类" prop="pc_no">
-          <el-select v-model="templateModel.pc_no" ref="select_class" placeholder="请选择属部门">
+          <el-select v-model="templateModel.pc_no" ref="select_class" placeholder="请选择所属分类">
             <el-option :label="templateModel.pc_name" :value="templateModel.pc_no" style="height:auto;padding:0;">
               <el-tree :data="classData" node-key="pc_no" ref="tree" default-expand-all :expand-on-click-node="false"
                 highlight-current :current-node-key="templateModel.pc_no">
@@ -265,6 +265,9 @@ export default {
       additemText: "",
       templateModel: {},
       add_rules: {
+        pc_no:[
+          { required: true, message: "请选择所属分类", trigger: "change" }
+        ],
         pt_name: [
           { required: true, message: "请填写模板名称", trigger: "blur" }
         ]

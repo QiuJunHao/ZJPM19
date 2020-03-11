@@ -150,7 +150,7 @@
           </el-input>
         </el-form-item> -->
         <el-form-item label="所属部门" prop="dept_id">
-          <el-select v-model="taskModel.dept_id" ref="select_dept" placeholder="请选择属部门">
+          <el-select v-model="taskModel.dept_id" ref="select_dept" placeholder="请选择部门">
             <el-option :label="taskModel.dept_name" :value="taskModel.dept_id" style="height:auto;padding:0;">
               <el-tree :data="deptData" node-key="dept_id" ref="tree" default-expand-all :expand-on-click-node="false"
                 highlight-current :current-node-key="taskModel.dept_id">

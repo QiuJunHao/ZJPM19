@@ -36,10 +36,10 @@
     <el-dialog width="500px" :title="addgptText" :close-on-click-modal="false" :visible.sync="addgptVisiable"
       top="5vh" @closed="refreshForm">
       <el-form :model="templateGroupTypeModel" label-width="100px" ref="templateGroupTypeForm" :rules="add_rules">
-        <el-form-item label="模板类型编号">
+        <!-- <el-form-item label="模板类型编号">
           <el-input class="formItem" v-model="templateGroupTypeModel.tgt_id" placeholder="系统自动生成" disabled>
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="模板类型名称">
           <el-input class="formItem" v-model="templateGroupTypeModel.tgt_name" placeholder="请填写模板类型名称">
           </el-input>

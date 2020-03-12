@@ -485,6 +485,16 @@ export default {
 .formItem {
   width: 300px;
 }
+/* split样式 */
+.splitButton {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  color: #20a0ff;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 35px;
+}
 /* 水平菜单样式 */
 .el-menu--horizontal > .el-menu-item,
 .el-menu--horizontal > .el-submenu .el-submenu__title {

@@ -33,7 +33,7 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="bottomDivShow?'300px':'550px'"
+          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="bottomDivShow?'250px':'560px'"
             :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
             @selection-change="handleSelectionChange" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -65,7 +65,7 @@
           </el-table>
         </div>
         <div class="bottomLayout">
-          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'300px':'50px'}">
+          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'360px':'50px'}">
             <el-tab-pane label="模板产品" name="first">
               <div v-if="bottomDataShow && bottomDivShow">
                 <div class="tbar">
@@ -83,7 +83,7 @@
                   </el-button>
                 </div>
                 <div class="gridTable">
-                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="200" :data="productData"
+                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="250" :data="productData"
                     tooltip-effect="dark" highlight-current-row border @selection-change="handleSelectionChange2">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column type="index" width="40" align="center">

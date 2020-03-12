@@ -2,7 +2,7 @@
   <div class="codeTable" style="width:1100px">
     <div>
     <table style="height:100%;width:100%">
-      <td style="width:40%">
+      <td style="width:50%">
         <div>
           <el-card>
             <div slot="header">
@@ -75,8 +75,8 @@
                 </el-table-column>
                 <el-table-column property="ct_id" label="分类ID" align="center" width="100">
                 </el-table-column>
-                <el-table-column property="cc_code" label="编码code" align="center" width="100">
-                </el-table-column>
+                <!-- <el-table-column property="cc_code" label="编码code" align="center" width="100">
+                </el-table-column> -->
                 <el-table-column property="cc_name" label="编码名称"  align="center" width="100">
                 </el-table-column>
                 <el-table-column property="cc_note" label="编码说明" align="center" >

@@ -8,26 +8,27 @@
               <span>模板分类</span>
               <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
 
-              <!-- <el-dropdown :hide-on-click="false" style="margin-right: 10px">
+              <el-dropdown :hide-on-click="false" style="margin-left: 70px">
                 <span class="el-dropdown-link">
                   <i class="el-icon-setting"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click="addNewTemplateTypeGroup">
-                    新增
+                  <el-dropdown-item @click.native="addNewTemplateTypeGroup">
+                    新增模板分类
                   </el-dropdown-item>
-                  <el-dropdown-item>
-                    <el-button type="danger" disabled size="mini" icon="el-icon-delete" circle
-                      @click="onDeleteOneTempGroupType(scope.row)">
-                    </el-button>
+                  <!-- <el-dropdown-item @click.native="editTempGroupTypeShow(scope.currentRow)"> -->
+                  <el-dropdown-item @click.native="editTempGroupTypeShow(selectClass)">
+                    编辑模板类型
                   </el-dropdown-item>
-
+                  <el-dropdown-item @click.native="onDeleteOneTempGroupType(selectClass)">
+                    删除模板类型
+                  </el-dropdown-item>
                 </el-dropdown-menu>
-              </el-dropdown> -->
+              </el-dropdown>
 
-              <el-button style="margin-left=0" type="primary" size="mini" icon="el-icon-folder-add" circle
+              <!-- <el-button style="margin-left=0" type="primary" size="mini" icon="el-icon-folder-add" circle
                 @click="addNewTemplateTypeGroup">
-              </el-button>
+              </el-button> -->
               <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle
                 @click="editTempGroupTypeShow(scope.row)">
               </el-button>
@@ -74,8 +75,8 @@
         <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
           <div class="tbar">
             <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
-            <el-input disabled size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称" v-model="condition"
-              clearable style="width:250px;">
+            <el-input disabled size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称"
+              v-model="condition" clearable style="width:250px;">
               <el-button disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
             </el-input>
             <el-button type="primary" size="small" style="margin-left:10px;" :disabled="!selectClass.tgt_id"
@@ -98,18 +99,16 @@
           </div>
           <div>
             <el-table ref="tgTable" v-loading="loading" style="width: 100%;" height="450px" :data="TemplateGroupData"
-              tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all
+              tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all border
               @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
-              <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
-              <!-- <el-table-column prop="tg_name" label="组织模板名称" width="100" align="center"></el-table-column> -->
-              
+              <el-table-column type="selection" width="55" align="center"></el-table-column>
               <el-table-column prop="wp_id" label="组织岗位名称" align="center" width="280">
                 <template slot-scope="scope">{{scope.row.wp_id | renderFilter(PostDataFilter)}}</template>
               </el-table-column>
               <el-table-column prop="tg_node_type" label="节点类型" align="center" width="120">
                 <template slot-scope="scope">{{scope.row.tg_node_type | stTypeTrans}}</template>
               </el-table-column>
-              <el-table-column prop="tg_note" label="说明" align="center"></el-table-column>
+              <el-table-column prop="tg_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
               <el-table-column label="操作" width="140" prop="handle">
                 <template slot-scope="scope">
                   <el-button type="primary" icon="el-icon-edit" size="mini" circle
@@ -204,7 +203,7 @@ export default {
       activeName: "first",
       tgtData: [], //表格数据
       PostDataFilter: [],
-      
+
       addgptVisiable: false,
       templateGroupTypeModel: {},
       selectClass: {},
@@ -536,8 +535,10 @@ export default {
         this.currentRow = {};
         this.z_get(
           "api/template_group/treeList",
-          { tgt_id: this.selectClass.tgt_id,
-           condition: this.renderFilter(this.condition,this.PostDataFilter) },
+          {
+            tgt_id: this.selectClass.tgt_id,
+            condition: this.renderFilter(this.condition, this.PostDataFilter)
+          },
           { loading: false }
         )
           .then(res => {
@@ -591,7 +592,7 @@ export default {
                   type: "success",
                   duration: 1000
                 });
-                this.refreshTemplateData;
+                this.refreshClass();
                 this.addgptVisiable = false;
               })
               .catch(res => {
@@ -609,7 +610,7 @@ export default {
                   type: "success",
                   duration: 1000
                 });
-                this.refreshTemplateData();
+                this.refreshClass();
                 this.addgptVisiable = false;
               })
               .catch(res => {
@@ -713,9 +714,5 @@ export default {
 }
 .classTree .el-tree-node__content {
   height: 30px;
-}
-.el-dropdown-link {
-  cursor: pointer;
-  color: #409eff;
 }
 </style>

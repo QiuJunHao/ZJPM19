@@ -8,7 +8,7 @@
             style="width:320px;">
             <el-button @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
           </el-input>
-          <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增项目类型</el-button>
+          <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增物料类型</el-button>
 
           <el-button type="primary" size="small" :disabled="selection.length!=1" @click="addNewTaskShow('children')">新增子节点</el-button>
           <el-button type="danger" size="small" :disabled="selection.length==0" @click="deleteList">删除选中节点({{selection.length}})
@@ -28,7 +28,7 @@
             highlight-current-row row-key="it_id" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="it_id" label="物料类型编号" align="center" width="150"></el-table-column>
+            <!-- <el-table-column prop="it_id" label="物料类型编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="it_name" label="物料类型名称" align="center" width="150"></el-table-column>
             <el-table-column prop="it_code" label="it_code" align="center" width="480"></el-table-column>
             <el-table-column label="操作" width="150" prop="handle">

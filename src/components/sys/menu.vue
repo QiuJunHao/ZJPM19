@@ -2,23 +2,35 @@
   <div class="main">
     <div class="left">
       <div style="padding:20px 10px 10px 10px;display:flex;align-items:center;">
-        <el-button plain type="primary" icon="el-icon-plus" style="margin-right:10px;" size="mini" circle title="新增系统模块"
-          @click="isAddModule=true"></el-button>
         <el-input size="small" @input="filterModuleData" placeholder="系统模块过滤" v-model="module_condition" clearable
           prefix-icon='el-icon-search'>
         </el-input>
       </div>
-      <el-table ref="moduleTable" style="width:100%;" :data="moduleData" tooltip-effect="dark" highlight-current-row
-        :show-header="false" fit row-key="module_id" :current-row-key="currentModule.module_id"
+      <div class="left-tbar">
+        <el-button size="mini" round @click="isAddModule=true">新增模块</el-button>
+        <el-button size="mini" round @click="CreateModuleSortable" v-show="moduleSortable==null">调整排序</el-button>
+      </div>
+      <div class="sortable-tool" v-show="moduleSortable!=null">
+        <span>上下拖动调整位置</span>
+        <a @click="SaveModuleSortable">保存</a>
+        <a @click="CancelModuleSortable">取消</a>
+      </div>
+      <el-table class="module_table" ref="moduleTable" style="width:100%;" :data="moduleData" tooltip-effect="dark"
+        highlight-current-row :show-header="false" fit row-key="module_id" :current-row-key="currentModule.module_id"
         @current-change="handleModuleRowClick">
-        <el-table-column prop="module_name" align="center"></el-table-column>
+        <el-table-column prop="module_name" align="left">
+          <template slot-scope="scope">
+            <i class="el-icon-s-operation" v-show="moduleSortable!=null"></i>
+            <span :style="moduleSortable!=null?'margin-left:10px':'margin-left:30px'">{{ scope.row.module_name }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="center">
       <div class="center-title">
         <span>{{currentModule.module_name}}</span>
         <el-button style="margin:auto 5px; width:60px" size="mini" round
-          @click="moduleModel=currentModule;isEditModule=true">编辑</el-button>
+          @click="moduleModel=JSON.parse(JSON.stringify(currentModule));isEditModule=true">编辑</el-button>
       </div>
       <div class="tbar">
         <el-input size="small" @keyup.enter.native="refreshMenuData" placeholder="菜单名/链接" v-model="menu_condition"
@@ -33,20 +45,25 @@
           :disabled="!currentMenu.menu_id">
           新增子菜单
         </el-button>
+        <el-button size="small" @click="UpMenu" v-show="showDragMenu" :disabled="!currentMenu.menu_id">上移</el-button>
+        <el-button size="small" @click="DownMenu" v-show="showDragMenu" :disabled="!currentMenu.menu_id">下移</el-button>
         <el-dropdown style="margin-left:10px;">
           <el-button size="small">
             操作<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
-            <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
+            <el-dropdown-item @click.native="expandAll">展开所有</el-dropdown-item>
+            <el-dropdown-item @click.native="collapseAll" divided>收起所有</el-dropdown-item>
+            <el-dropdown-item @click.native="showDragMenu=!showDragMenu;" divided>{{showDragMenu?'隐藏调整排序':'调整排序'}}
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div>
-        <el-table ref="menuTable" style="width: 100%;" height="500px" :data="menuData" tooltip-effect="dark"
-          highlight-current-row row-key="menu_id" default-expand-all @current-change="handleMenuRowClick"
-          @selection-change="handleMenuSelectionChange">
+        <el-table class="menu_table" ref="menuTable" style="width: 100%;" height="500px" :data="menuData"
+          tooltip-effect="dark" highlight-current-row row-key="menu_id" :expand-row-keys="menuExpandRowKeys"
+          @current-change="handleMenuRowClick" @selection-change="handleMenuSelectionChange"
+          @expand-change="handleMenuExpandChange">
           <el-table-column type="selection" width="55" align="center"></el-table-column>
           <el-table-column prop="menu_name" label="菜单名称" align="left" width="200" show-overflow-tooltip>
           </el-table-column>
@@ -71,7 +88,8 @@
       <div class="tbar">
         <el-button size="mini" round :disabled="!currentMenu.menu_id"
           @click="isAddElement=true;elementModel.menu_id=currentMenu.menu_id;">新增</el-button>
-        <el-button size="mini" round @click="isEditElement=true;elementModel=currentElement"
+        <el-button size="mini" round
+          @click="isEditElement=true;elementModel=JSON.parse(JSON.stringify(currentElement));"
           :disabled="!currentElement.element_id">编辑</el-button>
         <el-button size="mini" round plain type="danger" :disabled="elementSelection.length==0"
           @click="onDeleteElementListClick">
@@ -89,7 +107,7 @@
 
     <!-- 新增模块 -->
     <el-dialog width="450px" :title="isAddModule?'新增系统模块':'编辑系统模块'" :close-on-click-modal="false"
-      :visible.sync="moduleFormVisible" @closed="moduleModel={}">
+      :visible.sync="moduleFormVisible" @closed="moduleModel={};$refs.moduleForm.resetFields()">
       <zj-form size="small" :newDataFlag='isEditModule' :model="moduleModel" label-width="100px" ref="moduleForm"
         :rules="add_module_rules">
         <el-form-item label="模块名称" prop="module_name">
@@ -107,16 +125,14 @@
     </el-dialog>
     <!-- 新增编辑菜单 -->
     <el-dialog width="450px" :title="isAddMenu?'新增菜单':'编辑菜单'" :close-on-click-modal="false"
-      :visible.sync="menuFormVisible" @closed="menuModel={}">
+      :visible.sync="menuFormVisible" @closed="menuModel={};$refs.menuForm.resetFields()">
       <zj-form size="small" :newDataFlag='isEditMenu' :model="menuModel" label-width="100px" ref="menuForm"
         :rules="add_menu_rules">
         <el-form-item label="所属模块">
-          <el-input class="form-item" v-model="currentModule.module_name" disabled>
-          </el-input>
+          <span class="display-form-item">{{currentModule.module_name}}</span>
         </el-form-item>
         <el-form-item label="上级菜单" v-show="menuModel.menu_pid">
-          <el-input class="form-item" v-model="currentMenu.menu_name" disabled>
-          </el-input>
+          <span class="display-form-item">{{currentMenu.menu_name}}</span>
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input class="form-item" v-model="menuModel.menu_name" placeholder="请填写菜单名称">
@@ -140,12 +156,11 @@
     </el-dialog>
     <!-- 新增编辑页面元素 -->
     <el-dialog width="450px" :title="isAddElement?'新增页面元素':'编辑页面元素'" :close-on-click-modal="false"
-      :visible.sync="elementFormVisible" @closed="elementModel={}">
+      :visible.sync="elementFormVisible" @closed="elementModel={};$refs.elementForm.resetFields()">
       <zj-form size="small" :newDataFlag='isEditElement' :model="elementModel" label-width="110px" ref="elementForm"
         :rules="add_element_rules">
         <el-form-item label="所属菜单">
-          <el-input class="form-item" v-model="currentMenu.menu_name" disabled>
-          </el-input>
+          <span class="display-form-item">{{currentMenu.menu_name}}</span>
         </el-form-item>
         <el-form-item label="页面元素名称" prop="element_name">
           <el-input class="form-item" v-model="elementModel.element_name" placeholder="请填写页面元素名称">
@@ -167,6 +182,7 @@
 </template>
 
 <script>
+import Sortable from "sortablejs";
 export default {
   name: "",
   data() {
@@ -208,43 +224,53 @@ export default {
         element_code: [
           { required: true, message: "请填写页面元素代码", trigger: "blur" }
         ]
-      }
+      },
+      moduleSortable: null,
+      menuSortable: null,
+      showDragMenu: false,
+      menuExpandRowKeys:[],
     };
   },
   computed: {
-    moduleFormVisible:{
-      get: function () {
+    menuExpandAll: function() {
+      if (this.showDragMenu == true) {
+        return false;
+      }
+      return true;
+    },
+    moduleFormVisible: {
+      get: function() {
         return this.isAddModule || this.isEditModule;
       },
-      set: function (v) {
-        if(!v){
-          this.isAddModule=false;
-          this.isEditModule=false;
+      set: function(v) {
+        if (!v) {
+          this.isAddModule = false;
+          this.isEditModule = false;
         }
       }
     },
-    menuFormVisible:{
-      get: function () {
+    menuFormVisible: {
+      get: function() {
         return this.isAddMenu || this.isEditMenu;
       },
-      set: function (v) {
-        if(!v){
-          this.isAddMenu=false;
-          this.isEditMenu=false;
+      set: function(v) {
+        if (!v) {
+          this.isAddMenu = false;
+          this.isEditMenu = false;
         }
       }
     },
-    elementFormVisible:{
-      get: function () {
+    elementFormVisible: {
+      get: function() {
         return this.isAddElement || this.isEditElement;
       },
-      set: function (v) {
-        if(!v){
-          this.isAddElement=false;
-          this.isEditElement=false;
+      set: function(v) {
+        if (!v) {
+          this.isAddElement = false;
+          this.isEditElement = false;
         }
       }
-    },
+    }
   },
   methods: {
     //刷新数据
@@ -254,8 +280,19 @@ export default {
         .then(res => {
           this.moduleMetaData = res.data;
           this.filterModuleData();
-          if (!this.currentModule.module_id || setcurrent)
-            this.currentModule = res.data[0];
+          if (!this.currentModule.module_id) this.currentModule = res.data[0];
+          else {
+            if (setcurrent) this.currentModule = res.data[0];
+            else {
+              for (let i = 0; i < res.data.length; i++) {
+                const item = res.data[i];
+                if (item.module_id == this.currentModule.module_id) {
+                  this.currentModule = item;
+                  break;
+                }
+              }
+            }
+          }
           this.refreshMenuData();
         })
         .catch(res => {});
@@ -273,7 +310,7 @@ export default {
       })
         .then(res => {
           this.menuData = res.data;
-          this.currentMenu={};
+          this.currentMenu = {};
         })
         .catch(res => {});
     },
@@ -288,6 +325,16 @@ export default {
       this.currentMenu = row == null ? {} : row;
       this.refreshElementData();
     },
+    //记录树节点的展开状态
+    handleMenuExpandChange(row, expanded){
+      if(expanded){
+        this.menuExpandRowKeys.push(row.menu_id.toString());
+      }else{
+        let index = this.menuExpandRowKeys.indexOf(row.menu_id.toString());
+        if(index!=-1)
+          this.menuExpandRowKeys.splice(index,1);
+      }
+    },
     handleElementSelectionChange(val) {
       this.elementSelection = val;
     },
@@ -300,7 +347,7 @@ export default {
       })
         .then(res => {
           this.elementData = res.data;
-          this.currentElement={};
+          this.currentElement = {};
         })
         .catch(res => {});
     },
@@ -454,7 +501,7 @@ export default {
       });
     },
     editMenu(row) {
-      this.menuModel = row;
+      this.menuModel = JSON.parse(JSON.stringify(row));
       this.isEditMenu = true;
     },
     deleteMenu(row) {
@@ -616,6 +663,127 @@ export default {
           }
         }
       }
+    },
+    //创建模块排序
+    CreateModuleSortable() {
+      console.log(this.$refs.menuTable);
+      const table = document
+        .querySelector(".module_table")
+        .querySelector(".el-table__body-wrapper tbody");
+      const self = this;
+      this.moduleSortable = Sortable.create(table, {
+        onEnd({ newIndex, oldIndex }) {
+          const targetRow = self.moduleData.splice(oldIndex, 1)[0];
+          self.moduleData.splice(newIndex, 0, targetRow);
+        }
+      });
+    },
+    //取消模块排序
+    CancelModuleSortable() {
+      this.moduleSortable.destroy();
+      this.moduleSortable=null;
+      this.filterModuleData();
+    },
+    //保存模块排序
+    SaveModuleSortable() {
+      this.moduleSortable.destroy();
+      this.moduleSortable=null;
+      for (let i = 0; i < this.moduleData.length; i++) {
+        const item = this.moduleData[i];
+        item.module_sort = i;
+        item.UpdateColumns = ["module_sort"];
+      }
+      this.z_put("api/module/list", this.moduleData)
+        .then(res => {
+          this.$message({
+            message: "保存成功",
+            type: "success",
+            duration: 1000
+          });
+          this.refreshModuleData();
+        })
+        .catch(res => {
+          this.$alert("保存失败" + res.msg, "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
+    },
+    UpMenu() {
+      var siblings = this.getTreeSiblings(
+        this.currentMenu,
+        this.menuData,
+        "menu_pid",
+        "menu_id"
+      );
+      var index = siblings.indexOf(this.currentMenu);
+      if (index == 0) {
+        this.$message({
+          message: "同级中的第一行不能上移",
+          type: "warning",
+          duration: 1000
+        });
+        return;
+      }
+      siblings.splice(index, 1)[0];
+      siblings.splice(index - 1, 0, this.currentMenu);
+      for (let i = 0; i < siblings.length; i++) {
+        const item = siblings[i];
+        item.menu_sort = i;
+        item.UpdateColumns = ["menu_sort"];
+      }
+      this.z_put("api/menu/list", siblings)
+        .then(res => {
+          this.$message({
+            message: "上移成功",
+            type: "success",
+            duration: 1000
+          });
+        })
+        .catch(res => {
+          this.$alert("上移失败" + res.msg, "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
+    },
+    DownMenu() {
+      var siblings = this.getTreeSiblings(
+        this.currentMenu,
+        this.menuData,
+        "menu_pid",
+        "menu_id"
+      );
+      var index = siblings.indexOf(this.currentMenu);
+      if (index == siblings.length - 1) {
+        this.$message({
+          message: "同级中的最后一行不能下移",
+          type: "warning",
+          duration: 1000
+        });
+        return;
+      }
+      siblings.splice(index, 1)[0];
+      siblings.splice(index + 1, 0, this.currentMenu);
+      for (let i = 0; i < siblings.length; i++) {
+        const item = siblings[i];
+        item.menu_sort = i;
+        item.UpdateColumns = ["menu_sort"];
+      }
+      this.z_put("api/menu/list", siblings)
+        .then(res => {
+          this.$message({
+            message: "下移成功",
+            type: "success",
+            duration: 1000
+          });
+        })
+        .catch(res => {
+          this.$alert("下移失败" + res.msg, "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
     }
   },
   mounted() {
@@ -665,5 +833,27 @@ export default {
   display: flex;
   justify-items: center;
   align-items: center;
+}
+.display-form-item {
+  border-bottom: 1px solid #333;
+  padding: 5px 15px;
+}
+.sortable-tool {
+  background: #fffada;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  font-size: 10px;
+}
+.left-tbar {
+  display: flex;
+  justify-content: center;
+  padding: 5px 0px;
+  background: #eee;
+}
+.sortable-tool a {
+  color: #38adff;
+  margin-left: 10px;
+  cursor: pointer;
 }
 </style>

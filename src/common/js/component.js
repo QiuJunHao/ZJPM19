@@ -45,5 +45,8 @@ Vue.component('zj-form', {
             });
             return this.UpdateColumns;
         }
+    },
+    mounted(){
+        //this.comparativeData = JSON.parse(JSON.stringify(this.model));
     }
 })

@@ -481,6 +481,10 @@ export default {
   padding: 5px 15px;
   background-color: #eee;
 }
+/* form中组件的长度 */
+.formItem {
+  width: 300px;
+}
 /* 水平菜单样式 */
 .el-menu--horizontal > .el-menu-item,
 .el-menu--horizontal > .el-submenu .el-submenu__title {

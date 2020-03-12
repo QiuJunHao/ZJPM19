@@ -85,7 +85,18 @@ let dateFormat = function (time, format) {
     if (format == "yyyy-MM-dd") {
         date = year + "-" + month + "-" + day;
     }
+    if(format=="HH:mm"){
+        date = hour + ":" + minute;
+    }
     return date;
+}
+let yesOrNo=function(value,format){
+    if (format=="是否"){
+    if(value==1){
+      return "是"
+   }
+   else return "否"
+   }
 }
 
 function dateFilter(value) {
@@ -125,5 +136,6 @@ export {
     toLocale,
     dateFormat,
     dateFilter,
+    yesOrNo,
     renderFilter
 }

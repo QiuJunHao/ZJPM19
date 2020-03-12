@@ -173,26 +173,6 @@ export default {
       }
       // this.refresh();
     },
-    addNewNode(type) {
-      var dept_pid = ""; //创建根节点时，若pid为空，前端后台不匹配；若pid为0，因为pid和id外键关联，后台无法插入
-      if (type == "root") {
-        this.addDeptText = "新增根节点";
-      } else if (type == "children") {
-        dept_pid = this.selection[0].dept_id;
-        this.addDeptText = "新增[" + this.selection[0].dept_name + "]的子节点";
-      }
-      this.deptModel = {
-        c_id: 1, //现在先写死，到时候通过缓存给该变量赋值
-        dept_name: "",
-        dept_pname: "",
-        dept_type_id: "",
-        dept_note: "",
-        dept_pid: dept_pid
-      };
-      this.deptModel.dept_pname = this.filterDeptName(this.deptModel.dept_pid);
-      this.addOrNot = true;
-      this.addDeptVisiable = true;
-    },
     onSaveTDempClick() {
       this.$refs.deptForm.validate(valid => {
         if (valid) {

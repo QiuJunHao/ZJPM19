@@ -29,10 +29,10 @@
             <el-table-column prop="item_specification" label="规格" align="center" width="120"></el-table-column>
             <el-table-column prop="item_brand" label="品牌" align="center" width="120"></el-table-column>
             <el-table-column prop="item_weight" label="重量" align="center" width="100"></el-table-column>
-            <el-table-column fixed="right" label="操作" width="140" prop="handle" align="center">
+            <el-table-column fixed="right" label="操作" width="100" prop="handle" align="center">
               <template slot-scope="scope">
-                <el-button type="info" icon="el-icon-more" size="mini" circle @click="editTaskShow(scope.row)">
-                </el-button>
+                <!-- <el-button type="info" icon="el-icon-more" size="mini" circle @click="editTaskShow(scope.row)">
+                </el-button> -->
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">

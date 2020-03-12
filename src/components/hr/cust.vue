@@ -18,11 +18,11 @@
           circle
         ></el-button>
         <el-input
-          @keyup.enter.native="search()"
+          @keyup.enter.native="refreshData" v-model="condition"
           placeholder="请输入客户信息"
           style="width:300px;"
         >
-          <el-button @click="search()" slot="append" icon="el-icon-search"
+          <el-button @click="refreshData" slot="append" icon="el-icon-search"
             >搜索</el-button
           >
         </el-input>
@@ -36,7 +36,7 @@
         <el-button type="primary" size="small">导入</el-button>
       </div>
 
-      <el-table :data="tableData" height="680px" border style="width: 100% ">
+      <el-table :data="tableData" height="680px" border style="width: 100% "  row-key="c_no">
         <el-table-column type="index" label="序号" width="100" align="center">
         </el-table-column>
         <el-table-column
@@ -75,7 +75,7 @@
         </el-table-column>
         <el-table-column label="操作" width="220" align="center">
           <template slot-scope="scope">
-            <el-button size="mini" @click="editDeptShow(scope.row)"
+            <el-button size="mini"
               >详情</el-button>
             
             <el-button size="mini" @click="editCustShow(scope.row)"
@@ -94,7 +94,7 @@
 
 
     <el-dialog :title="addCustText" :visible.sync="custFormVisible" width="30%" close-on-click-model="false" @closed="refreshForm">
-  <el-form :model="custModel" :rules="rules" ref="custForm" label-width="120px" label-position="right" style="width:400px">
+  <zj-form  :newDataFlag="custFormVisible" :model="custModel" :rules="rules"  label-width="120px" label-position="right" style="width:400px" ref="custForm" >
     <el-form-item label="客户代码" prop="c_code">
       <el-input v-model="custModel.c_code" autocomplete="off"></el-input>
     </el-form-item>
@@ -122,10 +122,10 @@
       </el-select>
     </el-form-item>
 
-  </el-form>
+  </zj-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="custFormVisible = false">取 消</el-button>
-    <el-button type="primary" @click ="onSaveTaskClick('cusForm')">保 存</el-button>
+    <el-button type="primary" @click ="onSaveCustClick('custForm')">保 存</el-button>
   </div>
 </el-dialog>
 
@@ -143,6 +143,8 @@ export default {
       condition: "", 
       addCustText: "",
       tableData: [],
+      custDataFilter: [],
+      
       addOrNot: true,
       rules:{//新增客户校验规则
         c_code:[
@@ -186,11 +188,15 @@ export default {
         },] */
     };
   },
+
+
+
+  
   methods: {
     refreshData() {
       this.z_get("api/customer", { condition: this.condition })
         .then(res => {
-          // this.deptDataFilter = res.dept_id;
+          //this.custDataFilter = res.dict.c_no;
           this.tableData = res.data;
         })
         .catch(res => {});
@@ -216,6 +222,7 @@ export default {
     //编辑数据
     editCustShow(row) {
       this.custModel = JSON.parse(JSON.stringify(row));
+     
       this.addCustText = "编辑客户信息";
       this.addOrNot = false;
       this.custFormVisible = true;
@@ -241,35 +248,18 @@ export default {
             });
     },
 
-    // onDeleteClick(list) {
-    //   this.$confirm("是否删除？删除后无法恢复！", "提示", {
-    //     confirmButtonText: "是",
-    //     cancelButtonText: "否",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //      // var realSelect = this.arrayChildrenFlatten(list, []); //搜索对应节点的分支（从子节点至叶子节点的所有节点）
-    //       this.z_delete("api/customer", { data: list })
-    //         .then(res => {
-    //           this.$message({
-    //             message: "删除成功",
-    //             type: "success",
-    //             duration: 1000
-    //           });
-    //           this.refreshData();
-    //         })
-    //         .catch(res => {
-    //           this.$alert("删除失败", "提示", {
-    //             confirmButtonText: "确定",
-    //             type: "error"
-    //           });
-    //           console.log(res);
-    //         });
-    //     })
-    //     .catch(() => {});
-    // },
+     filterDeptName(id) {
+      var name = id;
+      var cust = this.custDataFilter.filter(item => item.value == id);
+      if (cust.length) {
+        name = cust[0].display;
+      }
+      return name;
+    },
 
-    onSaveTaskClick(){
+ 
+
+    onSaveCustClick(){
       this.$refs.custForm.validate(valid => {
         if (valid) {
           if (this.addOrNot) {
@@ -288,27 +278,28 @@ export default {
                   confirmButtonText: "确定",
                   type: "error"
                 });
-                console.log(res);
+
               });
           } else {
-            this.z_put("api/customer", this.custModel)
-              .then(res => {
-                this.$message({
-                  message: "编辑成功",
-                  type: "success",
-                  duration: 1000
+            this.custModel.UpdateColumns = this.$refs.custForm.UpdateColumns;
+            console.log(this.custModel)
+              this.z_put("api/customer", this.custModel)
+                .then(res => {
+                  this.$message({
+                    message: "编辑成功!",
+                    type: "success",
+                    duration: 1000
+                  });
+                  this.refreshData();
+                  this.custFormVisible = false;
+                })
+                .catch(res => {
+                  this.$alert("编辑失败!", "提示", {
+                    confirmButtonText: "确定",
+                    type: "error"
+                  });
                 });
-                this.refreshData();
-                this.custFormVisible = false;
-              })
-              .catch(res => {
-                this.$alert("编辑失败", "提示", {
-                  confirmButtonText: "确定",
-                  type: "error"
-                });
-                console.log(res);
-              });
-          }
+          }             
         } else {
           return false;
         }
@@ -345,5 +336,4 @@ export default {
 }
 .tbar {
   margin: 10px;
-}</style
->>
+}</style>

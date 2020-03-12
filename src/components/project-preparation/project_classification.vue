@@ -28,7 +28,7 @@
             highlight-current-row row-key="pc_no" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="pc_no" label="项目类型编号" align="center" width="150"></el-table-column>
+            <!-- <el-table-column prop="pc_no" label="项目类型编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="pc_name" label="项目类型名称" align="center" width="150"></el-table-column>
             <el-table-column prop="pc_note" label="说明" align="center" width="480"></el-table-column>
             <el-table-column label="操作" width="150" prop="handle">

@@ -1,6 +1,6 @@
 <template>
   <div class="project-template">
-    <el-container style="min-height: 700px;">
+    <el-container>
       <el-aside width="220px" style="padding-right:10px;">
         <el-card style="height:100%;box-sizing:border-box;" shadow="never">
           <div slot="header">
@@ -19,7 +19,7 @@
           </el-tree>
         </el-card>
       </el-aside>
-      <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
+      <el-main class="mainContent">
         <div class="tbar">
           <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="searchTemplate"></el-button>
           <el-input size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称" v-model="condition"
@@ -33,9 +33,9 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="templateTable" v-loading="loading" style="width:100%;" height="300" :data="projectTemplateData"
-            tooltip-effect="dark" highlight-current-row border @selection-change="handleSelectionChange"
-            @row-click="handleRowClick">
+          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="bottomDivShow?'250px':'560px'"
+            :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
+            @selection-change="handleSelectionChange" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="pt_name" label="模板名称" align="center" width="100"></el-table-column>
             <el-table-column prop="pt_note" label="模板说明" align="center" show-overflow-tooltip></el-table-column>
@@ -64,10 +64,10 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="bottomLayout" style="min-height:300px;">
-          <el-tabs v-model="activeName">
+        <div class="bottomLayout">
+          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'360px':'50px'}">
             <el-tab-pane label="模板产品" name="first">
-              <div v-if="bottomDataShow">
+              <div v-if="bottomDataShow && bottomDivShow">
                 <div class="tbar">
                   <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="searchProduct"></el-button>
                   <el-input size="small" @keyup.enter.native="refreshProductData" placeholder="请输入物料名称"
@@ -109,6 +109,8 @@
               </div>
             </el-tab-pane>
           </el-tabs>
+          <i class="splitButton" :class="[bottomDivShow?'el-icon-caret-bottom':'el-icon-caret-top']"
+            @click="bottomDivShow=!bottomDivShow"></i>
         </div>
       </el-main>
     </el-container>
@@ -265,7 +267,7 @@ export default {
       additemText: "",
       templateModel: {},
       add_rules: {
-        pc_no:[
+        pc_no: [
           { required: true, message: "请选择所属分类", trigger: "change" }
         ],
         pt_name: [
@@ -281,6 +283,7 @@ export default {
       addOrNot: true,
       activeName: "first",
       bottomDataShow: false,
+      bottomDivShow: false,
       itemModelList: [],
       itemModel: {}
     };
@@ -397,6 +400,7 @@ export default {
         this.refreshBottom();
         this.refreshProductData();
       }
+      this.bottomDivShow = true;
       this.bottomDataShow = true;
     },
     addNewTemplateShow() {
@@ -648,6 +652,14 @@ export default {
 <style scoped>
 .project-template {
   width: 1200px;
+}
+.mainContent {
+  border-left: 10px solid #eee;
+  padding: 0 0 0 10px;
+  overflow-y: hidden;
+}
+.bottomLayout {
+  position: relative;
 }
 .transferDiv {
   display: inline;

@@ -75,7 +75,7 @@
           <template v-for="(item, index) in breadCrumbList.breadCrumbList">
             <a v-if="index == 0" :key="index" @click="refreshPage">&nbsp;{{ item.menu_name }}&nbsp;>&nbsp;</a>
             <span v-else-if="index == breadCrumbList.breadCrumbList.length - 1" :key="index">
-              <el-select v-model="item.menu_link" size="mini" style="width:110px;" @change="changRouter">
+              <el-select v-model="item.menu_link" size="mini" style="width:130px;" @change="changRouter">
                 <el-option v-for="array in breadCrumbList.selectArray" :key="array.menu_link" :label="array.menu_name"
                   :value="array.menu_link">
                 </el-option>

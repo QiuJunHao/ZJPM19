@@ -27,11 +27,10 @@
           </el-dropdown>
         </div>
         <div class="gridTable">
-          <el-table ref="taskTable" style="width: 100%;" :height="bottomDivShow?'250px':'550px'" :data="taskData"
+          <el-table ref="taskTable" style="width: 100%;" :height="bottomDivShow?'250px':'560px'" :data="taskData"
             tooltip-effect="dark" highlight-current-row row-key="st_id" default-expand-all
             @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <!-- <el-table-column prop="st_id" label="任务编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="st_name" label="任务名称" align="center" width="180"></el-table-column>
             <el-table-column prop="dept_id" label="部门" align="center" width="180">
               <template slot-scope="scope">{{scope.row.dept_id | renderFilter(deptDataFilter)}}</template>
@@ -53,7 +52,7 @@
         </div>
       </div>
       <div class="bottomLayout">
-        <el-tabs v-model="activeName" :style="{height:bottomDivShow?'350px':'50px'}">
+        <el-tabs v-model="activeName" :style="{height:bottomDivShow?'360px':'50px'}">
           <el-tab-pane label="物料需求" name="first">
             <div v-if="bottomDataShow&&bottomDivShow">
               <div class="tbar">
@@ -143,14 +142,6 @@
       :visible.sync="addTaskVisiable">
       <zj-form size="small" :newDataFlag='addTaskVisiable' :model="taskModel" label-width="100px" ref="taskForm"
         :rules="add_rules">
-        <!-- <el-form-item label="任务编号">
-          <el-input class="formItem" v-model="taskModel.st_id" placeholder="系统自动生成" disabled>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="上级任务编号">
-          <el-input class="formItem" v-model="taskModel.st_pid" placeholder="无" disabled>
-          </el-input>
-        </el-form-item> -->
         <el-form-item label="所属部门" prop="dept_id">
           <el-select v-model="taskModel.dept_id" ref="select_dept" placeholder="请选择部门">
             <el-option :label="taskModel.dept_name" :value="taskModel.dept_id" style="height:auto;padding:0;">

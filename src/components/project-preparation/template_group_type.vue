@@ -36,10 +36,10 @@
     <el-dialog width="500px" :title="addgptText" :close-on-click-modal="false" :visible.sync="addgptVisiable"
       top="5vh" @closed="refreshForm">
       <el-form :model="templateGroupTypeModel" label-width="100px" ref="templateGroupTypeForm" :rules="add_rules">
-        <el-form-item label="模板类型编号">
+        <!-- <el-form-item label="模板类型编号">
           <el-input class="formItem" v-model="templateGroupTypeModel.tgt_id" placeholder="系统自动生成" disabled>
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="模板类型名称">
           <el-input class="formItem" v-model="templateGroupTypeModel.tgt_name" placeholder="请填写模板类型名称">
           </el-input>
@@ -72,54 +72,9 @@ export default {
       templateGroupTypeModel: {},
       addOrNot: true, //是否新增
       addgptText: ""
-      // stType_options: [
-      //   {
-      //     value: "task",
-      //     label: "任务"
-      //   },
-      //   {
-      //     value: "work",
-      //     label: "节点"
-      //   }
-      // ],
-      // add_rules: {
-      //   dept_id: [{ required: true, message: "请选择部门", trigger: "change" }],
-      //   st_name: [
-      //     { required: true, message: "请填写任务名称", trigger: "blur" }
-      //   ],
-      //   st_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
-      // }
+      
     };
   },
-//   filters: {
-//     datatrans(value) {
-//       if (!value || value == "9999-12-31") return "";
-//       //时间戳转化大法
-//       let date = new Date(value);
-//       let y = date.getFullYear();
-//       let MM = date.getMonth() + 1;
-//       MM = MM < 10 ? "0" + MM : MM;
-//       let d = date.getDate();
-//       d = d < 10 ? "0" + d : d;
-//       let h = date.getHours();
-//       h = h < 10 ? "0" + h : h;
-//       let m = date.getMinutes();
-//       m = m < 10 ? "0" + m : m;
-//       let s = date.getSeconds();
-//       s = s < 10 ? "0" + s : s;
-//       return y + "-" + MM + "-" + d + " "; /* + h + ':' + m + ':' + s; */
-//     },
-//     stTypeTrans(value) {
-//       switch (value) {
-//         case "task":
-//           return "任务";
-//           break;
-//         case "work":
-//           return "节点";
-//           break;
-//       }
-//     }
-//   },
   watch: {
     addgptVisiable(val) {
       if (val) {

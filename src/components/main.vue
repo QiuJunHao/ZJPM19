@@ -457,9 +457,12 @@ export default {
   min-height: 100%;
   background-color: #eee;
   box-sizing: border-box;
+  flex: 1;
+  display: flex;
 }
 .mainContent {
   display: flex;
+  flex: 1;
 }
 .commonStyle {
   margin: 0 auto;
@@ -471,6 +474,8 @@ export default {
   margin: 0;
   padding: 0;
   background-color: #ecf5ef;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 
@@ -559,6 +564,9 @@ export default {
 }
 .el-card__body {
   padding: 10px !important;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 .mainContentCard .el-card__body {
   padding: 10px 15px !important;

@@ -156,6 +156,7 @@
                 @click="deleteListItem">
                   删除选中物料({{itemSelection.length}})
                 </el-button> -->
+                
               </div>
 
               <div class="gridTable">
@@ -322,11 +323,11 @@
     </el-dialog>
 
 
-    <!-- 新增/编辑物料需求 -->
+    <!-- 新增/编辑技能需求 -->
     <!-- <el-dialog 
     
     v-dialogDrag width="450px" 
-    title="新增物料需求" 
+    title="新增技能需求" 
     :close-on-click-modal="false"
     :visible.sync="addEmpItemVisible">
       <zj-form size="small" :newDataFlag='addEmpItemVisible' :model="empTechModel" label-width="100px"
@@ -373,7 +374,69 @@
       </zj-form>
       
     </el-dialog> -->
+  <!--  <el-dialog 
+    v-if="addEmpVisiable" 
+    v-dialogDrag width="450px" 
+    :title="addEmpText" 
+    :close-on-click-modal="false"
+    @closed= "refreshForm"
+    :visible.sync="addEmpVisiable">
+      <zj-form size="small" 
+      :newDataFlag='addEmpVisiable' 
+      :model="empModel" 
+      label-width="100px" 
+      ref="empForm"
+        :rules="add_rules">-->
 
+    <el-dialog    
+    v-dialogDrag width="450px" 
+    title="新增技能需求" 
+    :close-on-click-modal="false"
+    :visible.sync="addEmpItemVisible">
+      <zj-form size="small" :newDataFlag='addEmpItemVisible' :model="empTechModel" label-width="100px"
+        ref="tastTechForm" :rules="addTech_rules">
+
+        <el-form-item 
+        label="技能名称" 
+        prop="std_name">
+          <el-input 
+          class="formItem" 
+          v-model="empTechModel.std_name" 
+          placeholder="请填写技能名称">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item 
+        label="技能等级" 
+        prop="std_name">
+          <el-input 
+          class="formItem" 
+          v-model="empTechModel.std_name" 
+          placeholder="请填写技能等级">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item 
+        label="技能说明">
+          <el-input 
+          class="formItem" 
+          type="textarea" 
+          :rows="2" 
+          v-model="empTechModel.std_note" placeholder="备注信息">
+          </el-input>
+        </el-form-item>
+
+        <el-form-item style="text-align:center;margin-right:100px;">
+          <el-button size="medium" @click="addEmpItemVisible = false">取&nbsp;&nbsp;消</el-button>
+          <el-button type="primary" size="medium" @click="onSaveTechClick" style="margin-left:30px;">保&nbsp;&nbsp;存
+          </el-button>
+        </el-form-item>
+
+
+
+      </zj-form>
+      
+    </el-dialog> 
 
 
 
@@ -479,6 +542,40 @@ export default {
         评定人：create_user
         */
 
+       emp_id: [{ 
+          required: true, message: "请填写人员编号", trigger: "blur" }
+          ],
+       skill_id: [{ 
+          required: true, message: "请填写技能编号", trigger: "blur" }
+          ],
+       skill_name: [{ 
+          required: true, message: "请填写技能名称", trigger: "blur" }
+          ],
+       sl_id: [{ 
+          required: true, message: "请填写技能等级", trigger: "blur" }
+          ],
+       sl_name: [{ 
+          required: true, message: "请填写技能名称", trigger: "blur" }
+          ],
+      skill_note: [{ 
+          required: true, message: "请填写技能说明", trigger: "blur" }
+          ],
+      create_date: [{ 
+          required: true, message: "请填写创建时间", trigger: "blur" }
+          ],
+      create_user: [{ 
+          required: true, message: "请填写创建人", trigger: "blur" }
+          ],
+        
+          
+          
+      
+      
+
+
+
+
+
         emp_name: [
           { required: true, message: "请填写任务名称", trigger: "blur" }
         ],
@@ -547,7 +644,7 @@ export default {
     addEmpShow() {
       this.addOrNot = true;
       this.addEmpVisiable = true;
-      this.addEmpText = "新增客户";
+      this.addEmpText = "新增人员";
     },
 
     search() {
@@ -732,6 +829,7 @@ export default {
         }
       });
     }, */
+    
 
     //删除一个人员
     deleteOne(row) {

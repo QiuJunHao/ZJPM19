@@ -8,10 +8,9 @@
               <span>模板分类</span>
               <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
 
-              <el-dropdown :hide-on-click="false" style="margin-left: 70px">
-                <span class="el-dropdown-link">
-                  <i class="el-icon-setting"></i>
-                </span>
+              <el-dropdown :hide-on-click="false" style="margin-left: 58px">
+                <el-button icon="el-icon-setting" circle size="mini" title="设置"/>
+             
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item @click.native="addNewTemplateTypeGroup">
                     新增模板分类
@@ -74,19 +73,20 @@
       <el-container>
         <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
           <div class="tbar">
-            <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
-            <el-input disabled size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称"
+            <el-button icon="el-icon-refresh" title="刷新此分类下模板" size="mini" circle @click="refreshTemplateData"></el-button>
+            <el-input disabled title="此功能暂不可用" size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入岗位名称"
               v-model="condition" clearable style="width:250px;">
-              <el-button disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
+              <el-button title="此功能暂不可用" disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
             </el-input>
-            <el-button type="primary" size="small" style="margin-left:10px;" :disabled="!selectClass.tgt_id"
+            <el-button title="请选择模板类型" type="primary" size="small" style="margin-left:10px;" :disabled="!selectClass.tgt_id"
               @click="addNewTemplateGroup('root')">新增根节点
             </el-button>
             <el-button type="primary" size="small" v-if="currentRow.tg_id && selectClass.tgt_id"
               @click="addNewTemplateGroup('children')">新增子节点
             </el-button>
-            <!-- <el-button type="danger" :disabled="selection.length==0" @click="deleteList">删除选中组织结构模板({{selection.length}})
-        </el-button> -->
+            <el-button type="danger" size="small" v-if="!selection.length==0" @click="deleteList">
+              删除选中模板({{selection.length}})
+            </el-button>
             <el-dropdown style="margin-left:10px;">
               <el-button size="small">
                 操作<i class="el-icon-arrow-down el-icon--right"></i>
@@ -203,7 +203,7 @@ export default {
       activeName: "first",
       tgtData: [], //表格数据
       PostDataFilter: [],
-
+      tgtID: "",
       addgptVisiable: false,
       templateGroupTypeModel: {},
       selectClass: {},
@@ -636,17 +636,91 @@ export default {
     },
     //删除一个
     onDeleteOneTempGroupType(row) {
+      // alert(row.tgt_id);
+      // var tgtID = row.tgt_id;
       var list = [];
       list.push(row);
+      // this.onDeleteTempGroupTypeClick(tgtID, list);
       this.onDeleteTempGroupTypeClick(list);
     },
     //删除树
     deleteTempGroupTypeList() {
       if (this.selection.length) {
+        // this.onDeleteTempGroupTypeClick(tgtID, this.selection);
         this.onDeleteTempGroupTypeClick(this.selection);
       }
     },
+
+    // onDeleteTempGroupClick(list) {
+    //   this.$confirm("是否删除？节点下的子节点将一并删除！", "提示", {
+    //     confirmButtonText: "是",
+    //     cancelButtonText: "否",
+    //     type: "warning"
+    //   })
+    //     .then(() => {
+    //       this.z_delete("api/template_group_type/list", { data: list })
+    //         .then(res => {
+    //           this.$message({
+    //             message: "模板分类删除成功",
+    //             type: "success",
+    //             duration: 1000
+    //           });
+    //           this.refreshTemplateData();
+    //         })
+    //         .catch(res => {
+    //           this.$alert("模板分类删除失败", "提示", {
+    //             confirmButtonText: "确定",
+    //             type: "error"
+    //           });
+    //         });
+    //     })
+    //     .catch(() => {});
+    // },
+    // onDeleteTempGroupClick(list) {
+    //   this.z_delete("api/template_group_type/list", { data: list })
+    //     .then(res => {
+    //       this.$message({
+    //         message: "模板分类删除成功",
+    //         type: "success",
+    //         duration: 1000
+    //       });
+    //       this.refreshTemplateData();
+    //     })
+    //     .catch(res => {
+    //       this.$alert("模板分类删除失败", "提示", {
+    //         confirmButtonText: "确定",
+    //         type: "error"
+    //       });
+    //     });
+    // },
     onDeleteTempGroupTypeClick(list) {
+    // onDeleteTempGroupTypeClick(tgtID, list) {
+      // this.$confirm("是否删除？该类型下的模板将一并删除", "提示", {
+      //   confirmButtonText: "是",
+      //   cancelButtonText: "否",
+      //   type: "warning"
+      // })
+      //   .then(() => {
+      //     // this.z_delete("api/template_group/TGTlist", { tgtID: tgtID })
+      //     this.z_delete("api/template_group/TGTlist", 9)
+      //       .then(res => {
+      //         this.$message({
+      //           message: "模板删除成功!",
+      //           type: "success",
+      //           duration: 1000
+      //         });
+      //         this.refreshTemplateData();
+      //         this.onDeleteTempGroupClick(list);
+      //         this.alert(tgtID);
+      //       })
+      //       .catch(res => {
+      //         this.$alert("模板删除失败!", "提示", {
+      //           confirmButtonText: "确定",
+      //           type: "error"
+      //         });
+      //       });
+      //   })
+      //   .catch(() => {});
       this.$confirm("是否删除？", "提示", {
         confirmButtonText: "是",
         cancelButtonText: "否",
@@ -656,14 +730,14 @@ export default {
           this.z_delete("api/template_group_type/list", { data: list })
             .then(res => {
               this.$message({
-                message: "删除成功",
+                message: "模板分类删除成功",
                 type: "success",
                 duration: 1000
               });
-              this.refreshTemplateData();
+              this.refreshClass();
             })
             .catch(res => {
-              this.$alert("删除失败", "提示", {
+              this.$alert("模板分类删除失败，请先删除该类型下模板", "提示", {
                 confirmButtonText: "确定",
                 type: "error"
               });
@@ -671,6 +745,7 @@ export default {
         })
         .catch(() => {});
     },
+
     openMenu(e) {
       const menuMinWidth = 105;
       const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left

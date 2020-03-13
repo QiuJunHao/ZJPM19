@@ -65,7 +65,7 @@
           </el-table>
         </div>
         <div class="bottomLayout">
-          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'360px':'50px'}">
+          <el-tabs v-model="activeName" style="min-height:50px;">
             <el-tab-pane label="模板产品" name="first">
               <div v-if="bottomDataShow && bottomDivShow">
                 <div class="tbar">
@@ -116,7 +116,7 @@
     </el-container>
 
     <!-- 添加/编辑模板 -->
-    <el-dialog v-if="addTemplateVisible" v-dialogDrag width="450px" :title="addTemplateText"
+    <el-dialog v-if="addTemplateVisible" v-dialogDrag width="450px" :title="addOrNot?'新增模板':'编辑模板'"
       :close-on-click-modal="false" :visible.sync="addTemplateVisible">
       <zj-form size="small" :newDataFlag='addTemplateVisible' :model="templateModel" label-width="100px"
         ref="templateForm" :rules="add_rules">
@@ -212,8 +212,8 @@
     </el-dialog>
 
     <!-- 选择/修改物料 -->
-    <el-dialog v-if="selectItemVisible" v-dialogDrag width="450px" :title="additemText" :close-on-click-modal="false"
-      :visible.sync="selectItemVisible">
+    <el-dialog v-if="selectItemVisible" v-dialogDrag width="450px" :title="addOrNot?'新增模板产品':'编辑模板产品'"
+      :close-on-click-modal="false" :visible.sync="selectItemVisible">
       <zj-form size="small" :newDataFlag='selectItemVisible' :model="itemModel" label-width="100px" ref="itemForm"
         :rules="addItem_rules">
         <el-form-item label="需求数量" prop="pti_quantity">
@@ -265,8 +265,6 @@ export default {
       addTemplateVisible: false,
       addProductVisible: false,
       selectItemVisible: false,
-      addTemplateText: "",
-      additemText: "",
       templateModel: {},
       add_rules: {
         pc_no: [
@@ -413,7 +411,6 @@ export default {
         pt_name: "",
         pt_note: ""
       };
-      this.addTemplateText = "新增模板";
       this.addOrNot = true;
       this.addTemplateVisible = true;
     },
@@ -423,7 +420,6 @@ export default {
         this.templateModel.pc_no,
         this.classFilter
       );
-      this.addTemplateText = "编辑模板";
       this.addOrNot = false;
       this.addTemplateVisible = true;
     },
@@ -501,7 +497,6 @@ export default {
     editProductShow(row) {
       this.itemModel = JSON.parse(JSON.stringify(row));
       this.addOrNot = false;
-      this.additemText = "编辑模板产品";
       this.selectItemVisible = true;
     },
     deleteOneProduct(row) {
@@ -531,7 +526,7 @@ export default {
               this.refreshProductData();
             })
             .catch(res => {
-              this.$alert("删除失败!", "提示", {
+              this.$alert("删除失败:" + res.msg, "提示", {
                 confirmButtonText: "确定",
                 type: "error"
               });
@@ -568,7 +563,6 @@ export default {
         });
       } else {
         this.addOrNot = true;
-        this.additemText = "新增物料需求";
         this.selectItemVisible = true;
       }
     },

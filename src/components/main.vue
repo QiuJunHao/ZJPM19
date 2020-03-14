@@ -180,6 +180,7 @@ export default {
       "setMenuTreeList",
       "isContainMenu"
     ]),
+    ...mapMutations("badge", ["changeBadge"]),
     //全屏事件
     screenfull() {
       if (!screenfull.enabled) {

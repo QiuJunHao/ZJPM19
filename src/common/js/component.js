@@ -19,31 +19,39 @@ Vue.component('zj-form', {
                 }
             }
         },
-        model: {
-            deep: true,
-            immediate: true,
-            handler(val) {
-                this.getUpdateColumns();
-            }
-        }
+        // model: {
+        //     deep: true,
+        //     immediate: true,
+        //     handler(val, oldval) {
+        //         this.getUpdateColumns();
+        //     }
+        // }
     },
     data() {
         return {
             comparativeData: [],
-            UpdateColumns: null,
+            updateColumns: null,
+        }
+    },
+    computed:{
+        UpdateColumns:{
+            get:function(){
+                return this.getUpdateColumns();
+            }
         }
     },
     methods: {
         getUpdateColumns() {
-            this.UpdateColumns = null;
+            this.updateColumns = null;
             Object.keys(this.comparativeData).forEach(key => {
                 if (key == 'children') return;
+                if (key == 'UpdateColumns') return;
                 if (this.model[key] != this.comparativeData[key]) {
-                    if(this.UpdateColumns == null) this.UpdateColumns = [];
-                    this.UpdateColumns.push(key);
+                    if(this.updateColumns == null) this.updateColumns = [];
+                    this.updateColumns.push(key);
                 }
             });
-            return this.UpdateColumns;
+            return this.updateColumns;
         }
     },
     mounted(){

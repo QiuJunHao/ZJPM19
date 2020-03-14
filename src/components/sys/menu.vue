@@ -16,17 +16,20 @@
           <a @click="SaveModuleSortable">保存</a>
           <a @click="CancelModuleSortable">取消</a>
         </div>
-        <el-table class="module_table" ref="moduleTable" style="width:100%;" height="100%" :data="moduleData" tooltip-effect="dark"
-          highlight-current-row :show-header="false" fit row-key="module_id" :current-row-key="currentModule.module_id"
-          @current-change="handleModuleRowClick">
-          <el-table-column prop="module_name" align="left">
-            <template slot-scope="scope">
-              <i class="el-icon-s-operation" v-show="moduleSortable!=null"></i>
-              <span
-                :style="moduleSortable!=null?'margin-left:10px':'margin-left:30px'">{{ scope.row.module_name }}</span>
-            </template>
-          </el-table-column>
-        </el-table>
+        <div class="table_ct">
+          <el-table ref="moduleTable" style="width:100%;" height="100%" :data="moduleData" tooltip-effect="dark"
+            highlight-current-row :show-header="false" fit row-key="module_id"
+            :current-row-key="currentModule.module_id" @current-change="handleModuleRowClick">
+            <el-table-column prop="module_name" align="left">
+              <template slot-scope="scope">
+                <i class="el-icon-s-operation" v-show="moduleSortable!=null"></i>
+                <span
+                  :style="moduleSortable!=null?'margin-left:10px':'margin-left:30px'">{{ scope.row.module_name }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+
       </div>
       <div class="center">
         <div class="center-title">
@@ -62,25 +65,29 @@
             </el-dropdown-menu>
           </el-dropdown>
         </div>
-        <el-table class="menu_table" ref="menuTable" style="width:100%;" height="100%" :data="menuData"
-            tooltip-effect="dark" highlight-current-row row-key="menu_id" :expand-row-keys="menuExpandRowKeys"
+        <div class="table_ct">
+          <el-table ref="menuTable" style="width:100%;" :height="menuTableHeight" :data="menuData" tooltip-effect="dark"
+            highlight-current-row row-key="menu_id" :expand-row-keys="menuExpandRowKeys"
             @current-change="handleMenuRowClick" @selection-change="handleMenuSelectionChange"
             @expand-change="handleMenuExpandChange">
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
+            <el-table-column type="selection" width="50" align="center"></el-table-column>
             <el-table-column prop="menu_name" label="菜单名称" align="left" width="200" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="menu_link" label="菜单链接" align="left" width="200" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="menu_icon" label="菜单图标" align="center" width="100"></el-table-column>
+            <el-table-column prop="menu_icon" label="菜单图标" align="center" width="150" show-overflow-tooltip>
+            </el-table-column>
             <el-table-column label="操作" width="150" align="center" prop="handle">
               <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editMenu(scope.row)">
+                <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editMenuClick(scope.row)">
                 </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteMenu(scope.row)">
+                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteMenuClick(scope.row)">
                 </el-button>
               </template>
             </el-table-column>
           </el-table>
+        </div>
+
       </div>
       <div class="right">
         <div class="right-title">
@@ -97,13 +104,16 @@
             删除选中({{elementSelection.length}})
           </el-button>
         </div>
-        <el-table ref="elementTable" style="width:100%;" height="100%" :data="elementData" tooltip-effect="dark" highlight-current-row
-          fit row-key="element_id" @current-change="handleElementRowClick"
-          @selection-change="handleElementSelectionChange">
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <el-table-column prop="element_name" label="页面元素名称" align="left" show-overflow-tooltip></el-table-column>
-          <el-table-column prop="element_code" label="页面元素代码" align="left" show-overflow-tooltip></el-table-column>
-        </el-table>
+        <div class="table_ct">
+          <el-table ref="elementTable" style="width:100%;" height="100%" :data="elementData" tooltip-effect="dark"
+            highlight-current-row fit row-key="element_id" @current-change="handleElementRowClick"
+            @selection-change="handleElementSelectionChange">
+            <el-table-column type="selection" width="55" align="center"></el-table-column>
+            <el-table-column prop="element_name" label="页面元素名称" align="left" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="element_code" label="页面元素代码" align="left" show-overflow-tooltip></el-table-column>
+          </el-table>
+        </div>
+
       </div>
     </div>
 
@@ -133,8 +143,18 @@
         <el-form-item label="所属模块">
           <span class="display-form-item">{{currentModule.module_name}}</span>
         </el-form-item>
-        <el-form-item label="上级菜单" v-show="menuModel.menu_pid">
-          <span class="display-form-item">{{currentMenu.menu_name}}</span>
+        <el-form-item label="上级菜单" prop="menu_pid">
+          <el-select v-if="isEditMenu" v-model="menuModel.menu_pid" ref="pmenu_select" class="form-item" clearable
+            @clear="handlePMenuSelectClear">
+            <el-option :value="menuModel.menu_pid" :label="menuModel.menu_pname" style="height: auto">
+              <el-tree :data="menuData" node-key="menu_id" ref="tree" highlight-current default-expand-all
+                :expand-on-click-node="false" :current-node-key="menuModel.menu_pid">
+                <div slot-scope="{node, data}" style="width:100%" @click="handlePMenuClick(data)">
+                  {{data.menu_name}}</div>
+              </el-tree>
+            </el-option>
+          </el-select>
+          <span v-else v-show="menuModel.menu_pid" class="display-form-item">{{currentMenu.menu_name}}</span>
         </el-form-item>
         <el-form-item label="菜单名称" prop="menu_name">
           <el-input class="form-item" v-model="menuModel.menu_name" placeholder="请填写菜单名称">
@@ -230,7 +250,8 @@ export default {
       moduleSortable: null,
       menuSortable: null,
       showDragMenu: false,
-      menuExpandRowKeys: []
+      menuExpandRowKeys: [],
+      menuTableHeight: 300
     };
   },
   computed: {
@@ -323,6 +344,15 @@ export default {
     handleMenuSelectionChange(val) {
       this.selection = val;
     },
+    handlePMenuClick(data) {
+      this.menuModel.menu_pid = data.menu_id;
+      this.menuModel.menu_pname = data.menu_name;
+      this.$refs.pmenu_select.blur();
+    },
+    handlePMenuSelectClear() {
+      this.menuModel.menu_pid = null;
+      this.menuModel.menu_pname = null;
+    },
     handleMenuRowClick(row) {
       this.currentMenu = row == null ? {} : row;
       this.refreshElementData();
@@ -392,6 +422,8 @@ export default {
                     type: "error"
                   });
                 });
+            } else {
+              tis.isEditModule = false;
             }
           }
         } else {
@@ -494,6 +526,8 @@ export default {
                     type: "error"
                   });
                 });
+            } else {
+              tis.isEditMenu = false;
             }
           }
         } else {
@@ -501,11 +535,18 @@ export default {
         }
       });
     },
-    editMenu(row) {
+    editMenuClick(row) {
       this.menuModel = JSON.parse(JSON.stringify(row));
+      var parent = this.getTreeParent(
+        row,
+        this.menuData,
+        "menu_pid",
+        "menu_id"
+      );
+      if (parent) this.menuModel.menu_pname = parent.menu_name;
       this.isEditMenu = true;
     },
-    deleteMenu(row) {
+    deleteMenuClick(row) {
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "是",
         cancelButtonText: "否",
@@ -570,6 +611,8 @@ export default {
                     type: "error"
                   });
                 });
+            } else {
+              tis.isEditElement = false;
             }
           }
         } else {
@@ -667,7 +710,6 @@ export default {
     },
     //创建模块排序
     CreateModuleSortable() {
-      console.log(this.$refs.menuTable);
       const table = document
         .querySelector(".module_table")
         .querySelector(".el-table__body-wrapper tbody");
@@ -787,18 +829,22 @@ export default {
         });
     }
   },
+
   mounted() {
+    let that = this;
+    this.$nextTick(function() {
+      let h = that.$refs.menuTable.$el.parentNode.offsetHeight;
+      that.menuTableHeight = h;
+    });
     this.refreshModuleData();
-  }
+  },
+  created() {}
 };
 </script>
 
 <style scoped>
 .main_ct {
-  width: 1350px;
   padding: 0;
-  display: flex;
-  flex-direction: column;
 }
 .main {
   width: 100%;
@@ -807,14 +853,20 @@ export default {
   flex-direction: row;
 }
 .left {
+  box-sizing: border-box;
   width: 250px;
   border-left: 1px solid #dedede;
   border-right: 1px solid #dedede;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
 }
 .center {
+  box-sizing: border-box;
   width: 800px;
   padding: 15px 25px;
   display: flex;
+  display: -webkit-flex;
   flex-direction: column;
 }
 .center-title {
@@ -824,13 +876,17 @@ export default {
   display: flex;
   align-items: center;
 }
-/* .menu_table{
-  flex:1;
-} */
+.table_ct {
+  flex: 1;
+}
 .right {
-  width: 300px;
+  box-sizing: border-box;
+  width: 320px;
   padding: 15px 25px;
   border-left: 1px solid #dedede;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
 }
 .right-title {
   width: 100%;

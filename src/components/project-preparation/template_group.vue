@@ -6,24 +6,7 @@
           <div slot="header">
             <el-row>
               <span>模板分类</span>
-              <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
-
-              <el-dropdown :hide-on-click="false" style="margin-left: 58px">
-                <el-button icon="el-icon-setting" circle size="mini" title="设置"/>
-             
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native="addNewTemplateTypeGroup">
-                    新增模板分类
-                  </el-dropdown-item>
-                  <!-- <el-dropdown-item @click.native="editTempGroupTypeShow(scope.currentRow)"> -->
-                  <el-dropdown-item @click.native="editTempGroupTypeShow(selectClass)">
-                    编辑模板类型
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native="onDeleteOneTempGroupType(selectClass)">
-                    删除模板类型
-                  </el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <el-button style="float: right;" icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
 
               <!-- <el-button style="margin-left=0" type="primary" size="mini" icon="el-icon-folder-add" circle
                 @click="addNewTemplateTypeGroup">
@@ -35,8 +18,33 @@
                 @click="onDeleteOneTempGroupType(scope.row)">
               </el-button> -->
             </el-row>
-          </div>
 
+          </div>
+          <div>
+            <el-input size="mini" @keyup.enter.native="refreshClass"  placeholder="搜模板类型"
+              v-model="condition" clearable style="width:150px;">
+              <el-button size="mini" @click="refreshClass" slot="append" icon="el-icon-search">
+              </el-button>
+            </el-input>
+            <!-- <el-dropdown :hide-on-click="false" style="margin-left: 58px"> -->
+            <el-dropdown :hide-on-click="false">
+              <el-button icon="el-icon-setting" circle size="mini" title="设置" />
+
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="addNewTemplateTypeGroup">
+                  新增模板分类
+                </el-dropdown-item>
+                <!-- <el-dropdown-item @click.native="editTempGroupTypeShow(scope.currentRow)"> -->
+                <el-dropdown-item @click.native="editTempGroupTypeShow(selectClass)">
+                  编辑模板类型
+                </el-dropdown-item>
+                <el-dropdown-item @click.native="onDeleteOneTempGroupType(selectClass)">
+                  删除模板类型
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+          </div>
           <div highlight-current @click="refreshClass"
             style="width:100%;user-select:none;height:30px;line-height: 30px;">
             <el-tooltip effect="dark" content="点击显示所有模板信息" placement="left">
@@ -73,13 +81,15 @@
       <el-container>
         <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
           <div class="tbar">
-            <el-button icon="el-icon-refresh" title="刷新此分类下模板" size="mini" circle @click="refreshTemplateData"></el-button>
-            <el-input disabled title="此功能暂不可用" size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入岗位名称"
-              v-model="condition" clearable style="width:250px;">
-              <el-button title="此功能暂不可用" disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
+            <el-button icon="el-icon-refresh" title="刷新此分类下模板" size="mini" circle @click="refreshTemplateData">
+            </el-button>
+            <el-input disabled title="此功能暂不可用" size="small" @keyup.enter.native="refreshTemplateData"
+              placeholder="请输入岗位名称" v-model="condition" clearable style="width:250px;">
+              <el-button title="此功能暂不可用" disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索
+              </el-button>
             </el-input>
-            <el-button title="请选择模板类型" type="primary" size="small" style="margin-left:10px;" :disabled="!selectClass.tgt_id"
-              @click="addNewTemplateGroup('root')">新增根节点
+            <el-button title="请选择模板类型" type="primary" size="small" style="margin-left:10px;"
+              :disabled="!selectClass.tgt_id" @click="addNewTemplateGroup('root')">新增根节点
             </el-button>
             <el-button type="primary" size="small" v-if="currentRow.tg_id && selectClass.tgt_id"
               @click="addNewTemplateGroup('children')">新增子节点
@@ -101,14 +111,14 @@
             <el-table ref="tgTable" v-loading="loading" style="width: 100%;" height="450px" :data="TemplateGroupData"
               tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all border
               @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
-              <el-table-column type="selection" width="55" align="center"></el-table-column>
-              <el-table-column prop="wp_id" label="组织岗位名称" align="center" width="280">
+              <el-table-column type="selection" width="55" align="left"></el-table-column>
+              <el-table-column prop="wp_id" label="组织岗位名称" align="left" width="280">
                 <template slot-scope="scope">{{scope.row.wp_id | renderFilter(PostDataFilter)}}</template>
               </el-table-column>
-              <el-table-column prop="tg_node_type" label="节点类型" align="center" width="120">
+              <el-table-column prop="tg_node_type" label="节点类型" align="left" width="120">
                 <template slot-scope="scope">{{scope.row.tg_node_type | stTypeTrans}}</template>
               </el-table-column>
-              <el-table-column prop="tg_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
+              <el-table-column prop="tg_note" label="说明" align="left" show-overflow-tooltip></el-table-column>
               <el-table-column label="操作" width="140" prop="handle">
                 <template slot-scope="scope">
                   <el-button type="primary" icon="el-icon-edit" size="mini" circle
@@ -564,7 +574,7 @@ export default {
       this.tgtData = [];
       this.selectClass = {};
       // this.refreshTemplateData();
-      this.z_get("api/template_group_type")
+      this.z_get("api/template_group_type",{ condition: this.condition })
         .then(res => {
           this.tgtData = res.data;
         })
@@ -694,7 +704,7 @@ export default {
     //     });
     // },
     onDeleteTempGroupTypeClick(list) {
-    // onDeleteTempGroupTypeClick(tgtID, list) {
+      // onDeleteTempGroupTypeClick(tgtID, list) {
       // this.$confirm("是否删除？该类型下的模板将一并删除", "提示", {
       //   confirmButtonText: "是",
       //   cancelButtonText: "否",

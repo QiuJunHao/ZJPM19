@@ -70,9 +70,9 @@
               </taskDataComponent>
             </keep-alive>
           </el-tab-pane>
-          <el-tab-pane label="资料需求" name="third">
+          <el-tab-pane label="紧前任务" name="third">
           </el-tab-pane>
-          <el-tab-pane label="资料需求" name="forth">
+          <el-tab-pane label="紧后任务" name="forth">
           </el-tab-pane>
         </el-tabs>
         <i class="splitButton" :class="[bottomDivShow?'el-icon-caret-bottom':'el-icon-caret-top']"

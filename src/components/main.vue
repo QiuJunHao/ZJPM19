@@ -180,7 +180,6 @@ export default {
       "setMenuTreeList",
       "isContainMenu"
     ]),
-    ...mapMutations("badge", ["changeBadge"]),
     //全屏事件
     screenfull() {
       if (!screenfull.enabled) {
@@ -455,14 +454,17 @@ export default {
   border-radius: 50%;
 }
 .mainContentCard {
-  min-height: 100%;
+  height: 100%;
+  overflow:auto;
   background-color: #eee;
   box-sizing: border-box;
   flex: 1;
   display: flex;
+  display:-webkit-flex;
 }
 .mainContent {
   display: flex;
+  display:-webkit-flex;
   flex: 1;
 }
 .commonStyle {
@@ -470,12 +472,15 @@ export default {
   padding: 10px 20px;
   box-sizing: border-box;
   background-color: white;
+  display: flex;
+  flex-direction: column;
 }
 .backTop {
   margin: 0;
   padding: 0;
   background-color: #ecf5ef;
   display: flex;
+  display:-webkit-flex;
   flex-direction: column;
 }
 </style>
@@ -565,12 +570,13 @@ export default {
 }
 .el-card__body {
   padding: 10px !important;
-  display: flex;
-  flex-direction: column;
   width: 100%;
 }
 .mainContentCard .el-card__body {
   padding: 10px 15px !important;
+  display: flex;
+  display:-webkit-flex;
+  flex-direction: column;
 }
 .el-dialog__body {
   padding: 20px !important;

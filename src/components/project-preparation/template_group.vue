@@ -111,7 +111,7 @@
             <el-table ref="tgTable" v-loading="loading" style="width: 100%;" height="450px" :data="TemplateGroupData"
               tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all border
               @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
-              <el-table-column type="selection" width="55" align="left"></el-table-column>
+              <el-table-column type="selection" width="55" align="center"></el-table-column>
               <el-table-column prop="wp_id" label="组织岗位名称" align="left" width="280">
                 <template slot-scope="scope">{{scope.row.wp_id | renderFilter(PostDataFilter)}}</template>
               </el-table-column>

@@ -13,7 +13,7 @@
       </el-button>
     </div>
     <div class="gridTable">
-      <el-table ref="taskItemTable" v-loading="loading" style="width:100%;" height="250" :data="taskDataData"
+      <el-table ref="taskItemTable" v-loading="loading" style="width:100%;" height="200" :data="taskDataData"
         tooltip-effect="dark" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column type="index" width="40" align="center">

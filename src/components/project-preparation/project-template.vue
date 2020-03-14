@@ -33,7 +33,7 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="bottomDivShow?'250px':'560px'"
+          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="menuTableHeight"
             :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
             @selection-change="handleSelectionChange" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -65,9 +65,9 @@
           </el-table>
         </div>
         <div class="bottomLayout">
-          <el-tabs v-model="activeName" style="min-height:50px;">
+          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'310px':'50px'}">
             <el-tab-pane label="模板产品" name="first">
-              <div v-if="bottomDataShow && bottomDivShow">
+              <div v-if="bottomDivShow">
                 <div class="tbar">
                   <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="searchProduct"></el-button>
                   <el-input size="small" @keyup.enter.native="refreshProductData" placeholder="请输入物料名称"
@@ -83,7 +83,7 @@
                   </el-button>
                 </div>
                 <div class="gridTable">
-                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="250" :data="productData"
+                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="200" :data="productData"
                     tooltip-effect="dark" highlight-current-row border @selection-change="handleSelectionChange2">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column type="index" width="40" align="center">
@@ -282,11 +282,16 @@ export default {
       },
       addOrNot: true,
       activeName: "first",
-      bottomDataShow: false,
       bottomDivShow: false,
       itemModelList: [],
-      itemModel: {}
+      itemModel: {},
+      menuTableHeight: 0
     };
+  },
+  watch: {
+    bottomDivShow() {
+      this.resizeTable();
+    }
   },
   methods: {
     ...mapMutations("navTabs", ["addBreadCrumb"]),
@@ -322,7 +327,7 @@ export default {
     refreshBottom() {
       this.conditionProduct = "";
       this.productData = [];
-      this.bottomDataShow = false;
+      this.bottomDivShow = false;
     },
     refreshProductData() {
       this.loading3 = true;
@@ -402,7 +407,6 @@ export default {
         this.refreshProductData();
       }
       this.bottomDivShow = true;
-      this.bottomDataShow = true;
     },
     addNewTemplateShow() {
       this.templateModel = {
@@ -647,9 +651,19 @@ export default {
         }
       });
       this.addBreadCrumb("project-preparation/template-task");
+    },
+    //重新计算table高度
+    resizeTable() {
+      this.menuTableHeight = 0;
+      let that = this;
+      this.$nextTick(function() {
+        let h = that.$refs.templateTable.$el.parentNode.offsetHeight;
+        that.menuTableHeight = h;
+      });
     }
   },
   mounted() {
+    this.resizeTable();
     this.refreshClassData();
     this.refreshTemplateData();
   }
@@ -664,6 +678,11 @@ export default {
   border-left: 5px solid #eee;
   padding: 0 0 0 10px;
   overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.gridTable {
+  flex: 1;
 }
 .bottomLayout {
   position: relative;

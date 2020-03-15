@@ -300,6 +300,7 @@ export default {
     refreshTemplateData() {
       this.loading = true;
       this.refreshBottom();
+      this.currentRow = [];
       this.projectTemplateData = [];
       this.z_get(
         "api/project_template",

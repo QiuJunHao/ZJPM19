@@ -27,7 +27,7 @@
     <div class="gridTable">
       <el-table ref="taskTable" style="width: 100%;" :height="menuTableHeight" :data="taskData" tooltip-effect="dark"
         highlight-current-row row-key="st_id" default-expand-all @selection-change="handleSelectionChange"
-        @select-all="handleSelectAll" @row-click="handleRowClick">
+        @select-all="handleSelectAll" @row-click="handleRowClick" @row-dblclick="handleRowDBClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="st_name" label="任务名称" width="180" show-overflow-tooltip></el-table-column>
         <el-table-column prop="dept_id" label="部门" align="center" width="180">
@@ -378,6 +378,15 @@ export default {
     },
     //点击任务行显示下面
     handleRowClick(row, column) {
+      if (column.property == "handle") {
+        return;
+      }
+      if (JSON.stringify(this.currentRow) != JSON.stringify(row)) {
+        this.currentRow = row;
+      }
+      //this.bottomDivShow = true;
+    },
+    handleRowDBClick(row, column) {
       if (column.property == "handle") {
         return;
       }

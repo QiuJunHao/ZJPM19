@@ -6,6 +6,8 @@
         <el-option v-for="item in projectTemplateData" :key="item.pt_id"
           :label="renderFilter(item.pc_no,classFilter) +'-' + item.pt_name" :value="item.pt_id"></el-option>
       </el-select>
+      <el-button icon="el-icon-arrow-left" size="small" style="float:right;" v-if="btnShow" @click="toTemplate">返回项目模板
+      </el-button>
     </div>
     <div class="tbar">
       <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
@@ -35,7 +37,7 @@
     <div class="gridTable">
       <el-table ref="taskTable" style="width: 100%;" :height="menuTableHeight" :data="taskData" tooltip-effect="dark"
         highlight-current-row row-key="tt_no" default-expand-all @selection-change="handleSelectionChange"
-        @select-all="handleSelectAll" @row-click="handleRowClick">
+        @select-all="handleSelectAll" @row-click="handleRowClick" @row-dblclick="handleRowDBClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="tt_name" label="任务名称" width="180" show-overflow-tooltip></el-table-column>
         <el-table-column prop="tt_period" label="工期(天)" align="center" width="100"></el-table-column>
@@ -95,7 +97,7 @@
             </el-option>
           </el-select>
         </el-form-item> -->
-        <el-form-item label="任务名称" prop="pt_name">
+        <el-form-item label="任务名称" prop="tt_name">
           <el-input class="formItem" v-model="taskModel.tt_name" placeholder="请填写任务名称">
           </el-input>
         </el-form-item>
@@ -131,6 +133,7 @@
 <script>
 import taskItem from "./common/taskItem";
 import taskDataComponent from "./common/taskData";
+import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -160,12 +163,13 @@ export default {
       ],
       add_rules: {
         dept_id: [{ required: true, message: "请选择部门", trigger: "change" }],
-        st_name: [
+        tt_name: [
           { required: true, message: "请填写任务名称", trigger: "blur" }
         ],
-        st_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
+        tt_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
       },
-      menuTableHeight: 0
+      menuTableHeight: 0,
+      btnShow: false
     };
   },
   components: {
@@ -200,6 +204,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations("navTabs", ["addBreadCrumb"]),
     refreshTemplateData() {
       this.projectTemplateData = [];
       this.z_get("api/project_template", { pc_no: 0, condition: "" })
@@ -350,6 +355,15 @@ export default {
       if (JSON.stringify(this.currentRow) != JSON.stringify(row)) {
         this.currentRow = row;
       }
+      //this.bottomDivShow = true;
+    },
+    handleRowDBClick(row, column) {
+      if (column.property == "handle") {
+        return;
+      }
+      if (JSON.stringify(this.currentRow) != JSON.stringify(row)) {
+        this.currentRow = row;
+      }
       this.bottomDivShow = true;
     },
     //展开所有节点
@@ -382,6 +396,13 @@ export default {
         }
       }
     },
+    //跳转路由
+    toTemplate() {
+      this.$router.push({
+        name: "project-preparation/project-template"
+      });
+      this.addBreadCrumb("project-preparation/project-template");
+    },
     //重新计算table高度
     resizeTable() {
       this.menuTableHeight = 0;
@@ -397,6 +418,7 @@ export default {
     this.refreshTemplateData();
     if (this.$route.params.templateId) {
       this.selectTemplateId = this.$route.params.templateId;
+      this.btnShow = true;
       this.refreshData();
     }
   }

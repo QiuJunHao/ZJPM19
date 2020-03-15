@@ -506,14 +506,12 @@ export default {
           //选中最顶层
           level = "base";
         } else {
+          level = "detail";
           var fartherNode = this.standardSelection.filter(
             item => item.st_id == select.st_pid
           ); //看是否有父节点选中，没有这个就是最顶层
           if (fartherNode.length) {
-            level = "detail";
             pid = select.st_pid;
-          } else {
-            level = "base";
           }
         }
         var oneTask = {

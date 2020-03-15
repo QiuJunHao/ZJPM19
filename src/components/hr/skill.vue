@@ -25,7 +25,7 @@
           </el-dropdown>
         </div>
         <div class="gridTable">
-          <el-table ref="skillTable"  style="width: 100%" :data="skillData" tooltip-effect="dark"
+          <el-table ref="skillTable"  style="width: 100%" :data="skill" tooltip-effect="dark"
             highlight-current-row row-key="pc_no" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -103,7 +103,7 @@ export default {
         condition: this.condition
       })
         .then(res => {
-          this.skilldata = res.data;
+          this.skill = res.data;
         })
         .catch(res => {});
     },

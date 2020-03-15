@@ -130,7 +130,7 @@
                 <el-input 
                 size="small" 
                 @keyup.enter.native="refreshItemData" 
-                placeholder="请输入物料名称"
+                placeholder="请输入技能名称"
                 v-model="itemCondition" 
                 clearable style="width:250px;">
                   <el-button 

@@ -257,12 +257,6 @@ export default {
     };
   },
   computed: {
-    menuExpandAll: function() {
-      if (this.showDragMenu == true) {
-        return false;
-      }
-      return true;
-    },
     moduleFormVisible: {
       get: function() {
         return this.isAddModule || this.isEditModule;

@@ -1,8 +1,14 @@
 <template>
   <div>
-    <zj-form ref="form" :newDataFlag='newdata' label-position="top" :model="model" :rules="form_rules" hide-required-asterisk>
+    <zj-form ref="form" :newDataFlag='newdata' label-position="top" :model="model" :rules="form_rules"
+      hide-required-asterisk>
       <el-form-item prop="c_name" size="large">
-        <span slot="label" style="font-size:16px;font-weight:bold;">公司名称</span>
+        <span slot="label" style="font-size:16px;font-weight:bold;">
+          公司名称
+          <span style="font-size:13px;color:#E6A23C">
+            （公司名称与《部门管理》中的顶级部门名称保持同步）
+          </span>
+        </span>
         <el-input style="width:700px;" v-model="model.c_name"></el-input>
       </el-form-item>
       <el-form-item prop="c_eng_name" size="large">
@@ -25,10 +31,9 @@ export default {
         c_name: [
           { required: true, message: "公司名称不能为空", trigger: "blur" }
         ],
-        c_eng_name: [
-          { validator:this.validator.isAlpha, trigger: "blur" }]
+        c_eng_name: [{ validator: this.validator.isAlpha, trigger: "blur" }]
       },
-      newdata: false,
+      newdata: false
     };
   },
   methods: {
@@ -41,7 +46,9 @@ export default {
             this.z_put("api/company", this.model)
               .then(res => {
                 this.newdata = false;
-                this.newdata = true;
+                setTimeout(() => {
+                  this.newdata = true;
+                }, 1000);
                 this.$message({
                   message: "保存成功",
                   type: "success",
@@ -62,10 +69,17 @@ export default {
     }
   },
   mounted() {
-    this.z_get("api/company", { c_id: 1 }).then(res => {
-      this.model = res.data;
-      this.newdata = true;
-    });
+    this.z_get("api/company", { c_id: 1 })
+      .then(res => {
+        this.model = res.data;
+        this.newdata = true;
+      })
+      .catch(res => {
+        this.$alert("加载失败：" + res.msg, "提示", {
+          confirmButtonText: "确定",
+          type: "error"
+        });
+      });
   }
 };
 </script>

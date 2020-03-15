@@ -122,20 +122,20 @@ export default {
    
     addNewTaskShow(type) {
       var titleName = "";
-      var pc_pno = null;
+      var skill_name = null;
       if (type == "root") {
         titleName = "";
         this.addTaskText = "新增技能信息";
       } else if (type == "children") {
-        pc_pno = this.selection[0].pc_no;
-        titleName = this.selection[0].pc_name;
+        skill_name = this.selection[0].skill_name;
+        titleName = this.selection[0].skill_name;
         this.addTaskText = "新增[" + titleName + "]的子节点";
       }
       this.taskModel = {
-        pc_no: 1,
-        pc_pno: pc_pno,
-        pc_name: "",
-        pc_note: ""
+        skill_name: 1,
+        skill_name: skill_name,
+        skill_name: "",
+        skill_note: ""
       };
       this.addOrNot = true;
       this.addTaskVisiable = true;
@@ -285,7 +285,7 @@ export default {
     },
       //全选选中子节点
     handleSelectAll(selection) {
-      var val = this.ProclassData;
+      var val = this.skill;
       var select = false;
       for (var i = 0; i < selection.length; i++) {
         if (selection[i].pc_no == val[0].pc_no) {
@@ -328,7 +328,7 @@ export default {
 }
 
 
-</style>
+</style>-->
 
 
               

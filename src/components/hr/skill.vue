@@ -28,11 +28,10 @@
           <el-table ref="skillTable"  style="width: 100%" :data="skill" tooltip-effect="dark"
             highlight-current-row row-key="pc_no" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <!-- <el-table-column prop="pc_no" label="项目类型编号" align="center" width="150"></el-table-column> -->
+            <el-table-column type="selection" width="55" align="center"></el-table-column>  
             <el-table-column prop="skill_name" label="技能名称" align="center" width="150"></el-table-column>
             <el-table-column prop="skill_note" label="技能说明" align="center" width="480"></el-table-column>
-            <el-table-column label="操作" width="150" prop="handle">
+            <el-table-column label="操作" width="375" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>

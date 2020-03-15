@@ -34,7 +34,7 @@
             <el-table-column prop="auxiliary_unit" label="辅助单位" align="center" width="80"></el-table-column>
             <el-table-column prop="item_specification" label="规格" align="center" width="100"></el-table-column>
             <el-table-column prop="item_brand" label="品牌" align="center" width="100"></el-table-column>
-            <el-table-column prop="item_weight" label="重量" align="center" width="100"></el-table-column>
+            <el-table-column prop="item_weight" label="重量" align="center" width="50"></el-table-column>
 
             <el-table-column prop="it_1code" label="大类" align="center" width="100">
               <template slot-scope="scope">{{scope.row.it_1code | renderFilter(ITDataFilter1)}}</template>
@@ -225,7 +225,8 @@ export default {
     addItemVisiable(val) {
       if (val) {
         this.selectItem_type1();
-        //this.selectItem_type2();
+        this.selectItem_type2();
+        this.selectItem_type3();
       }
     }
   },
@@ -265,7 +266,7 @@ export default {
     selectItem_type1() {
       var conditionIT1 = "selectItemTypeCode1";
       this.itemTypeData3 = [];
-      (this.itemTypeData2 = []),
+      this.itemTypeData2 = [];
         this.z_get(
           "api/item_type",
           { condition: conditionIT1 },
@@ -419,9 +420,17 @@ export default {
     editTaskShow(row) {
       this.itemModel = JSON.parse(JSON.stringify(row));
       this.itemModel.it_1name = this.renderFilter(
-        this.itemModel.it_1code,
-        this.ITDataFilter1,
-        this.ITDataFilter2,
+        this.itemModel.it_1code,        
+        this.ITDataFilter1,        
+      );
+
+      this.itemModel.it_2name = this.renderFilter(
+        this.itemModel.it_2code,
+        this.ITDataFilter2
+      );
+
+      this.itemModel.it_3name = this.renderFilter(
+        this.itemModel.it_3code,
         this.ITDataFilter3
       );
 

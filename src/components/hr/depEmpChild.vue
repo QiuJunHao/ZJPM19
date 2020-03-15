@@ -67,8 +67,8 @@
     <el-dialog width="400px" :title="addDeptEmpText" :close-on-click-modal="false" :visible.sync="addDeptEmpVisiable"
       top="25vh" @closed="refreshForm" :append-to-body="true">
       <el-form :model="dept_empModel" label-width="100px" ref="deptEmpForm" :rules="add_rules">
-        <el-form-item label="人员" prop="emp_id">
-          <el-select v-model="dept_empModel.emp_id" ref="select_emp" placeholder="请选择人员">
+        <el-form-item label="人员" prop="emp_id" >
+          <el-select v-model="dept_empModel.emp_id" ref="select_emp" placeholder="请选择人员" :disabled="!addOrNot">
             <el-option v-for="item in empData" :key="item.value" :label="item.label" :value="item.value">
             </el-option>
           </el-select>
@@ -190,7 +190,7 @@ export default {
                 this.addDeptEmpVisiable = false;
               })
               .catch(res => {
-                this.$alert("新增失败", "提示", {
+                this.$alert("新增失败:"+res.msg, "提示", {
                   confirmButtonText: "确定",
                   type: "error"
                 });

@@ -28,7 +28,7 @@
           highlight-current-row row-key="dept_id" default-expand-all @selection-change="handleSelectionChange"
           @select-all="handleSelectAll" @row-click="handleRowClick">
           <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <el-table-column prop="dept_name" label="部门名称" align="center" width="220"></el-table-column>
+          <el-table-column prop="dept_name" label="部门名称" align="left" width="220"></el-table-column>
           <el-table-column prop="dept_type_id" label="类型" align="center" width="150">
             <!-- 是否写死，还是动态查数据  -->
             <template slot-scope="scope">{{scope.row.dept_type_id | deptTypeTrans}}</template>

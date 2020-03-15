@@ -46,7 +46,7 @@
     </el-card>
     <el-dialog width="400px" :title="addDeptShiftText" :close-on-click-modal="false"
       :visible.sync="addDeptShiftVisiable" top="25vh" @closed="refreshForm" :append-to-body="true">
-      <zj-form :newDataFlag='addDeptShiftText' :model="dept_shiftModel" label-width="100px" ref="deptShiftForm"
+      <zj-form :newDataFlag='addDeptShiftVisiable' :model="dept_shiftModel" label-width="100px" ref="deptShiftForm"
         :rules="add_rules">
         <el-form-item label="班次组" prop="sg_id">
           <el-select v-model="dept_shiftModel.sg_id" ref="select_shift" placeholder="请选择人员" :disabled="!addOrNot">
@@ -169,7 +169,7 @@ export default {
                 this.addDeptShiftVisiable = false;
               })
               .catch(res => {
-                this.$alert("新增失败:" + res.msg, "提示", {
+                this.$alert("新增失败:"+res.msg , "提示", {
                   confirmButtonText: "确定",
                   type: "error"
                 });

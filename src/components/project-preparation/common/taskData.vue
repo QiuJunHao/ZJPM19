@@ -18,7 +18,8 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column type="index" width="40" align="center">
         </el-table-column>
-        <el-table-column prop="std_name" label="资料名称" align="center" width="200"></el-table-column>
+        <el-table-column prop="std_name" label="资料名称" align="center" width="200" show-overflow-tooltip>
+        </el-table-column>
         <el-table-column prop="ddt_id" label="资料类型" align="center" width="130">
           <template slot-scope="scope">{{scope.row.ddt_id | renderFilter(dataTypeFilter)}}</template>
         </el-table-column>

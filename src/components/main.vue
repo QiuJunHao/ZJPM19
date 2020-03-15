@@ -92,16 +92,16 @@
               <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
             </keep-alive>
             <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
-          </div>
-          <div v-if="activeTabName == 'main'">
-            <div style="height:1500px;background-color:white;">
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
+            <div v-if="activeTabName == 'main'" style="width:100%;" class="commonStyle">
+              <div>
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+              </div>
             </div>
           </div>
         </el-card>

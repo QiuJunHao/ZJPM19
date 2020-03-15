@@ -29,7 +29,7 @@
         highlight-current-row row-key="st_id" default-expand-all @selection-change="handleSelectionChange"
         @select-all="handleSelectAll" @row-click="handleRowClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="st_name" label="任务名称" align="center" width="180"></el-table-column>
+        <el-table-column prop="st_name" label="任务名称" width="180" show-overflow-tooltip></el-table-column>
         <el-table-column prop="dept_id" label="部门" align="center" width="180">
           <template slot-scope="scope">{{scope.row.dept_id | renderFilter(deptDataFilter)}}</template>
         </el-table-column>

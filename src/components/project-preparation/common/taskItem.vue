@@ -18,7 +18,8 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column type="index" width="40" align="center">
         </el-table-column>
-        <el-table-column prop="item_name" label="物料名称" align="center" width="200"></el-table-column>
+        <el-table-column prop="item_name" label="物料名称" align="center" width="200" show-overflow-tooltip>
+        </el-table-column>
         <el-table-column prop="item_no" label="物料编码" align="center" width="130"></el-table-column>
         <el-table-column prop="sti_quantity" label="数量" align="center" width="90"></el-table-column>
         <el-table-column prop="item_unit" label="单位" align="center" width="100"></el-table-column>

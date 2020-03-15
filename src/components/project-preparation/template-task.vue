@@ -37,7 +37,7 @@
         highlight-current-row row-key="tt_no" default-expand-all @selection-change="handleSelectionChange"
         @select-all="handleSelectAll" @row-click="handleRowClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="tt_name" label="任务名称" align="center" width="180"></el-table-column>
+        <el-table-column prop="tt_name" label="任务名称" width="180" show-overflow-tooltip></el-table-column>
         <el-table-column prop="tt_period" label="工期(天)" align="center" width="100"></el-table-column>
         <el-table-column prop="tt_node_level" label="层级" align="center" width="100">
           <template slot-scope="scope">{{scope.row.tt_node_level | levelFilter}}</template>

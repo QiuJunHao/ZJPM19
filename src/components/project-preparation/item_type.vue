@@ -31,7 +31,7 @@
             <!-- <el-table-column prop="it_id" label="物料类型编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="it_name" label="物料类型名称" align="left" width="300" ></el-table-column>
             <!-- <el-table-column prop="it_code" label="物料编码" align="center" width="480"></el-table-column> -->
-            <el-table-column label="操作" width="150" prop="handle">
+            <el-table-column label="操作" width="700" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>
@@ -45,7 +45,7 @@
       </div>
     </div>
     <el-dialog width="500px" :title="addTaskText" :close-on-click-modal="false" :visible.sync="addTaskVisiable"
-      top="5vh" @closed="refreshForm">
+       @closed="refreshForm">
       <el-form :model="itemTypeModel" label-width="120px" ref="taskForm" :rules="add_rules">
 
         <!-- <el-form-item label="项目类型编号" prop="it_id">
@@ -331,6 +331,8 @@ export default {
   width: 300px;
   /* margin-left: 55px; */
 }
-
+.gridTable {
+  flex: 1;
+}
 
 </style>

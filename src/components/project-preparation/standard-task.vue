@@ -206,7 +206,7 @@ export default {
     //全选选中子节点
     handleSelectAll(selection) {
       var val = this.taskData;
-      var select = false;
+      var select = false;//全选还是反选
       for (var i = 0; i < selection.length; i++) {
         if (selection[i].st_id == val[0].st_id) {
           select = true;
@@ -250,7 +250,7 @@ export default {
         dept_id: "",
         dept_name: "",
         st_name: "",
-        st_type: "task",
+        st_type: "",
         st_period: "",
         st_note: ""
       };

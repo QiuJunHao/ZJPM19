@@ -4,9 +4,9 @@
       <div class="topLayout">
         <div class="tbar">
           <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
-          <el-input @keyup.enter.native="refreshData" placeholder="请输出物料类型名称" v-model="condition"
-            style="width:320px;">
-            <el-button @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
+          <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输出物料类型名称" v-model="condition"
+            style="width:240px;">
+            <el-button size="small" @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
           </el-input>
           <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增物料类型</el-button>
 
@@ -31,7 +31,7 @@
             <!-- <el-table-column prop="it_id" label="物料类型编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="it_name" label="物料类型名称" align="left" width="200" ></el-table-column>
             <el-table-column prop="it_note" label="说明" align="center" width="450"></el-table-column>
-            <el-table-column label="操作" width="150" prop="handle">
+            <el-table-column label="操作" width="154" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>
@@ -332,10 +332,15 @@ export default {
 .item_type {
   width: 900px;
 }
+
+.tbar {
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
 .formItem {
   width: 300px;
-  /* margin-left: 55px; */
 }
+
 .gridTable {
   flex: 1;
 }

@@ -18,7 +18,7 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="itemTable" style="width: 100%;" height="600px" :data="itemData" tooltip-effect="dark"
+          <el-table ref="itemTable" style="width: 100%;" :data="itemData" tooltip-effect="dark"
             highlight-current-row border row-key="item_no" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="40" align="center"></el-table-column>
@@ -245,8 +245,7 @@ export default {
     },
 
     selectCodeType1() {
-      this.codeType_options1 = [];
-      var codetypeCondition = -1;
+      this.codeType_options1 = [];      
       this.z_get("api/common_code", { ct_id: 3, condition: "" })
         .then(res => {
           this.codeType_options1 = res.data;
@@ -254,8 +253,7 @@ export default {
         .catch(res => {});
     },
     selectCodeType2() {
-      this.codeType_options2 = [];
-      var codetypeCondition = -1;
+      this.codeType_options2 = [];      
       this.z_get("api/common_code", { ct_id: 5, condition: "" })
         .then(res => {
           this.codeType_options2 = res.data;
@@ -549,30 +547,10 @@ export default {
   width: 300px;
 }
 
-.item-aside {
-  background: rgb(255, 255, 255);
-
-  position: relative;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  height: 795px;
-  /* padding: 10px 5px 20px 5px; */
-  padding: 0px;
-  align-self: auto;
+.gridTable {
+  flex: 1;
 }
 
-.item-main {
-  background: rgb(255, 255, 255);
-  position: relative;
-
-  padding: 0px 10px;
-  border-left: 10px solid #eee;
-  margin-left: 10px;
-
-  height: 1000px;
-  align-self: auto;
-}
 </style>
 
 

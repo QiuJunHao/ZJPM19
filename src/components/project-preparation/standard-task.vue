@@ -1,73 +1,70 @@
 <template>
   <div class="standard-task">
-    <div class="containAll">
-      <div class="topLayout">
-        <div class="tbar">
-          <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
-          <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输入任务名称" v-model="condition" clearable
-            style="width:250px;">
-            <el-button size="small" @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
-          </el-input>
-          <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增根节点
-          </el-button>
-          <el-button type="primary" size="small" :disabled="!currentRow.st_id" @click="addNewTaskShow('children')">
-            新增子节点
-          </el-button>
-          <el-button type="danger" size="small" :disabled="selection.length==0" @click="deleteList">
-            删除选中节点({{selection.length}})
-          </el-button>
-          <el-dropdown style="margin-left:10px;">
-            <el-button size="small">
-              操作<i class="el-icon-arrow-down el-icon--right"></i>
+    <div class="tbar">
+      <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
+      <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输入任务名称" v-model="condition" clearable
+        style="width:250px;">
+        <el-button size="small" @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
+      </el-input>
+      <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增根节点
+      </el-button>
+      <el-button type="primary" size="small" :disabled="!currentRow.st_id" @click="addNewTaskShow('children')">
+        新增子节点
+      </el-button>
+      <el-button type="danger" size="small" :disabled="selection.length==0" @click="deleteList">
+        删除选中节点({{selection.length}})
+      </el-button>
+      <el-dropdown style="margin-left:10px;">
+        <el-button size="small">
+          操作<i class="el-icon-arrow-down el-icon--right"></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
+          <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
+    <div class="gridTable">
+      <el-table ref="taskTable" style="width: 100%;" :height="menuTableHeight" :data="taskData" tooltip-effect="dark"
+        highlight-current-row row-key="st_id" default-expand-all @selection-change="handleSelectionChange"
+        @select-all="handleSelectAll" @row-click="handleRowClick" @row-dblclick="handleRowDBClick">
+        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        <el-table-column prop="st_name" label="任务名称" width="180" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="dept_id" label="部门" align="center" width="180">
+          <template slot-scope="scope">{{scope.row.dept_id | renderFilter(deptDataFilter)}}</template>
+        </el-table-column>
+        <el-table-column prop="st_period" label="工期(天)" align="center" width="100"></el-table-column>
+        <el-table-column prop="st_type" label="类别" align="center" width="100">
+          <template slot-scope="scope">{{scope.row.st_type | stTypeFilter}}</template>
+        </el-table-column>
+        <el-table-column prop="st_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="操作" width="140" prop="handle">
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
             </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
-              <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
-        <div class="gridTable">
-          <el-table ref="taskTable" style="width: 100%;" :height="bottomDivShow?'250px':'560px'" :data="taskData"
-            tooltip-effect="dark" highlight-current-row row-key="st_id" default-expand-all
-            @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="st_name" label="任务名称" align="center" width="180"></el-table-column>
-            <el-table-column prop="dept_id" label="部门" align="center" width="180">
-              <template slot-scope="scope">{{scope.row.dept_id | renderFilter(deptDataFilter)}}</template>
-            </el-table-column>
-            <el-table-column prop="st_period" label="工期(天)" align="center" width="100"></el-table-column>
-            <el-table-column prop="st_type" label="类别" align="center" width="100">
-              <template slot-scope="scope">{{scope.row.st_type | stTypeFilter}}</template>
-            </el-table-column>
-            <el-table-column prop="st_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column label="操作" width="140" prop="handle">
-              <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
-                </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </div>
-      <div class="bottomLayout">
-        <el-tabs v-model="activeName" style="min-height:50px;">
-          <el-tab-pane label="物料需求" name="first">
-            <keep-alive>
-              <taskItem v-if="bottomDataShow&&bottomDivShow" :currentRow='currentRow' source='standard'></taskItem>
-            </keep-alive>
-          </el-tab-pane>
-          <el-tab-pane label="资料需求" name="second">
-            <keep-alive>
-              <taskDataComponent v-if="bottomDataShow&&bottomDivShow" :currentRow='currentRow' source='standard'>
-              </taskDataComponent>
-            </keep-alive>
-          </el-tab-pane>
-        </el-tabs>
-        <i class="splitButton" :class="[bottomDivShow?'el-icon-caret-bottom':'el-icon-caret-top']"
-          @click="bottomDivShow=!bottomDivShow"></i>
-      </div>
+            <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="bottomLayout">
+      <el-tabs v-model="activeName" :style="{height:bottomDivShow?'300px':'50px'}">
+        <el-tab-pane label="物料需求" name="first">
+          <keep-alive>
+            <taskItem v-if="bottomDivShow" :currentRow='currentRow' source='standard'></taskItem>
+          </keep-alive>
+        </el-tab-pane>
+        <el-tab-pane label="资料需求" name="second">
+          <keep-alive>
+            <taskDataComponent v-if="bottomDivShow" :currentRow='currentRow' source='standard'>
+            </taskDataComponent>
+          </keep-alive>
+        </el-tab-pane>
+      </el-tabs>
+      <i class="splitButton" :class="[bottomDivShow?'el-icon-caret-bottom':'el-icon-caret-top']"
+        @click="bottomDivShow=!bottomDivShow"></i>
     </div>
 
     <!-- 新增/修改任务表单 -->
@@ -134,7 +131,6 @@ export default {
       selection: [], //选中行数据
       currentRow: {},
       addTaskVisiable: false,
-      bottomDataShow: false,
       bottomDivShow: false,
       taskModel: {},
       addOrNot: true, //是否新增
@@ -156,7 +152,8 @@ export default {
           { required: true, message: "请填写任务名称", trigger: "blur" }
         ],
         st_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
-      }
+      },
+      menuTableHeight: 0
     };
   },
   components: {
@@ -180,6 +177,9 @@ export default {
       if (val) {
         this.selectDept();
       }
+    },
+    bottomDivShow() {
+      this.resizeTable();
     }
   },
   methods: {
@@ -187,7 +187,6 @@ export default {
     refreshData() {
       this.taskData = [];
       this.currentRow = {};
-      this.bottomDataShow = false;
       this.bottomDivShow = false;
       this.z_get("api/standard_task/treeList", { condition: this.condition })
         .then(res => {
@@ -207,7 +206,7 @@ export default {
     //全选选中子节点
     handleSelectAll(selection) {
       var val = this.taskData;
-      var select = false;
+      var select = false;//全选还是反选
       for (var i = 0; i < selection.length; i++) {
         if (selection[i].st_id == val[0].st_id) {
           select = true;
@@ -251,7 +250,7 @@ export default {
         dept_id: "",
         dept_name: "",
         st_name: "",
-        st_type: "task",
+        st_type: "",
         st_period: "",
         st_note: ""
       };
@@ -385,8 +384,16 @@ export default {
       if (JSON.stringify(this.currentRow) != JSON.stringify(row)) {
         this.currentRow = row;
       }
+      //this.bottomDivShow = true;
+    },
+    handleRowDBClick(row, column) {
+      if (column.property == "handle") {
+        return;
+      }
+      if (JSON.stringify(this.currentRow) != JSON.stringify(row)) {
+        this.currentRow = row;
+      }
       this.bottomDivShow = true;
-      this.bottomDataShow = true;
     },
     //展开所有节点
     expandAll() {
@@ -417,9 +424,19 @@ export default {
           }
         }
       }
+    },
+    //重新计算table高度
+    resizeTable() {
+      this.menuTableHeight = 0;
+      let that = this;
+      this.$nextTick(function() {
+        let h = that.$refs.taskTable.$el.parentNode.offsetHeight;
+        that.menuTableHeight = h;
+      });
     }
   },
   mounted() {
+    this.resizeTable();
     this.refreshData();
     this.selectDept();
   }
@@ -432,6 +449,9 @@ export default {
 }
 .formItem2 {
   width: 200px;
+}
+.gridTable {
+  flex: 1;
 }
 .bottomLayout {
   position: relative;

@@ -92,16 +92,16 @@
               <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
             </keep-alive>
             <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
-          </div>
-          <div v-if="activeTabName == 'main'">
-            <div style="height:1500px;background-color:white;">
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
+            <div v-if="activeTabName == 'main'" style="width:100%;" class="commonStyle">
+              <div>
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+                主页内容
+              </div>
             </div>
           </div>
         </el-card>
@@ -455,16 +455,16 @@ export default {
 }
 .mainContentCard {
   height: 100%;
-  overflow:auto;
+  overflow: auto;
   background-color: #eee;
   box-sizing: border-box;
   flex: 1;
   display: flex;
-  display:-webkit-flex;
+  display: -webkit-flex;
 }
 .mainContent {
   display: flex;
-  display:-webkit-flex;
+  display: -webkit-flex;
   flex: 1;
 }
 .commonStyle {
@@ -480,7 +480,7 @@ export default {
   padding: 0;
   background-color: #ecf5ef;
   display: flex;
-  display:-webkit-flex;
+  display: -webkit-flex;
   flex-direction: column;
 }
 </style>
@@ -504,7 +504,7 @@ export default {
   color: #20a0ff;
   cursor: pointer;
   font-size: 20px;
-  line-height: 35px;
+  line-height: 35px !important;
 }
 /* 水平菜单样式 */
 .el-menu--horizontal > .el-menu-item,
@@ -575,7 +575,7 @@ export default {
 .mainContentCard .el-card__body {
   padding: 10px 15px !important;
   display: flex;
-  display:-webkit-flex;
+  display: -webkit-flex;
   flex-direction: column;
 }
 .el-dialog__body {

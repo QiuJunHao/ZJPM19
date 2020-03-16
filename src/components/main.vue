@@ -86,25 +86,21 @@
         </div>
       </el-header>
       <el-main class="backTop">
-        <el-card class="mainContentCard" shadow="never">
-          <div class="mainContent">
-            <keep-alive>
-              <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
-            </keep-alive>
-            <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
-            <div v-if="activeTabName == 'main'" style="width:100%;" class="commonStyle">
-              <div>
-                主页内容
-                主页内容
-                主页内容
-                主页内容
-                主页内容
-                主页内容
-                主页内容
-              </div>
-            </div>
+        <keep-alive>
+          <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
+        </keep-alive>
+        <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
+        <div v-if="activeTabName == 'main'" style="width:100%;" class="commonStyle">
+          <div>
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
           </div>
-        </el-card>
+        </div>
       </el-main>
     </el-container>
     <el-backtop target=".backTop" :right="30" :visibility-height="20">
@@ -453,34 +449,27 @@ export default {
   background-clip: padding-box;
   border-radius: 50%;
 }
-.mainContentCard {
-  height: 100%;
-  overflow: auto;
-  background-color: #eee;
-  box-sizing: border-box;
-  flex: 1;
-  display: flex;
-  display: -webkit-flex;
-}
-.mainContent {
-  display: flex;
-  display: -webkit-flex;
-  flex: 1;
-}
 .commonStyle {
   margin: 0 auto;
   padding: 10px 20px;
   box-sizing: border-box;
   background-color: white;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  -ms-flex-preferred-size: auto;
+  flex-basis: auto;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 .backTop {
   margin: 0;
-  padding: 0;
-  background-color: #ecf5ef;
+  padding: 10px 20px;
+  background-color: #eee;
   display: flex;
-  display: -webkit-flex;
   flex-direction: column;
 }
 </style>
@@ -571,12 +560,6 @@ export default {
 .el-card__body {
   padding: 10px !important;
   width: 100%;
-}
-.mainContentCard .el-card__body {
-  padding: 10px 15px !important;
-  display: flex;
-  display: -webkit-flex;
-  flex-direction: column;
 }
 .el-dialog__body {
   padding: 20px !important;

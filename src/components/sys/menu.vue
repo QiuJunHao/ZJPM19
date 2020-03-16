@@ -856,7 +856,7 @@ export default {
   box-sizing: border-box;
   width: 250px;
   border-left: 1px solid #dedede;
-  border-right: 1px solid #dedede;
+  border-right: 5px solid #dedede;
   display: flex;
   display: -webkit-flex;
   flex-direction: column;
@@ -875,15 +875,17 @@ export default {
   font-size: 20px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 .table_ct {
   flex: 1;
+  box-sizing: border-box;
 }
 .right {
   box-sizing: border-box;
-  width: 320px;
+  width: 350px;
   padding: 15px 25px;
-  border-left: 1px solid #dedede;
+  border-left: 5px solid #dedede;
   display: flex;
   display: -webkit-flex;
   flex-direction: column;

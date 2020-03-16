@@ -86,7 +86,7 @@
         </div>
       </div>
       <div class="bottomLayout">
-        <el-tabs v-model="activeName" style="min-height:50px;margin-top:10px">
+        <el-tabs v-model="activeName" style="{height:bottomDivShow?'300px':'50px'}">
           <el-tab-pane label="任务执行者" name="executor">
             <keep-alive>
               <taskExecutor v-if="bottomDivShow" :currentRow='currentRow'>
@@ -95,7 +95,12 @@
           </el-tab-pane>
           <el-tab-pane label="物料需求" name="material">
             <keep-alive>
-              <taskMaterial v-if="bottomDivShow" :currentRow='currentRow'></taskMaterial>
+              <taskMaterial v-if="bottomDivShow" :currentRow='currentRow' source='task'></taskMaterial>
+            </keep-alive>
+          </el-tab-pane>
+          <el-tab-pane label="资料需求" name="data">
+            <keep-alive>
+              <taskData v-if="bottomDivShow" :currentRow='currentRow' source='task'></taskData>
             </keep-alive>
           </el-tab-pane>
         </el-tabs>
@@ -209,11 +214,13 @@
 <script>
 import taskExecutor from "@/components/schedule-task/taskTab/taskExecutor";
 import taskMaterial from "@/components/schedule-task/taskTab/taskMaterial";
+import taskData from "@/components/schedule-task/taskTab/taskData";
 export default {
   name: "taskManage",
   components: {
     taskExecutor,
-    taskMaterial
+    taskMaterial,
+    taskData
   },
   data() {
     return {

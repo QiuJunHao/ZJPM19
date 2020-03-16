@@ -6,7 +6,7 @@
           <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输入执行人/部门" v-model="condition"
             style="width:200px;">
           </el-input>
-          <el-button size="small" type="primary" style="margin-left:10px;" @click="addNewOne()">新增</el-button>
+          <el-button size="small" type="primary" style="margin-left:10px;" @click="addNewOne()">新增执行者</el-button>
         </div>
         <div class="gridTable" style="width:60%;">
           <el-table ref="taskExecutorTable" style="width: 100%" height="200px" :data="tableData" tooltip-effect="dark"

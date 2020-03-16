@@ -31,7 +31,7 @@
         >
       </div>
 
-      <el-table :data="tableData" height="680px"  border style="width:100% " row-key="user_id"  tooltip-effect="dark">
+      <el-table :data="tableData" height="100%"  border style="width:100% " row-key="user_id"  tooltip-effect="dark">
         <el-table-column type="index" label="序号" width="100" align="center">
         </el-table-column>
         <el-table-column
@@ -95,11 +95,11 @@
 
     <el-dialog :title="addUserText" :visible.sync="userFormVisible" width="500px" close-on-click-model="false" @closed="refreshForm">
   <zj-form  :newDataFlag="userFormVisible" :model="userModel" :rules="rules"  label-width="120px" label-position="right" style="width:400px" ref="userForm" >
-    <el-form-item label="用户代码"  prop="user_id" >
+    <el-form-item label="账号ID"  prop="user_id" >
       <el-input v-model="userModel.user_id" autocomplete="off"></el-input>
     </el-form-item>
 
-    <el-form-item label="用户名称" prop="login_name">
+    <el-form-item label="用户名" prop="login_name">
       <el-input v-model="userModel.login_name" autocomplete="off"></el-input>
     </el-form-item>
 
@@ -114,14 +114,14 @@
 
     <el-form-item label="账号类别" prop="user_type">
       <el-select v-model="userModel.user_type" placeholder="请选择账号类别">
-        <el-option label="员工" value="员工"></el-option>
+        <el-option label="员工" value="1"></el-option>
       </el-select>
     </el-form-item>
 
     <el-form-item label="账号状态" prop="status">
       <el-select v-model="userModel.status" placeholder="请选择账号状态">
-        <el-option label="在用" value="在用"></el-option>
-        <el-option label="已注销" value="已注销"></el-option>
+        <el-option label="在用" value="1"></el-option>
+        <el-option label="已注销" value="2"></el-option>
       </el-select>
     </el-form-item>
 
@@ -146,7 +146,7 @@ export default {
       condition: "", 
       addUserText: "",
       tableData: [],
-      currentRow: {},
+      //currentRow: {},
       
       
       addOrNot: true,
@@ -207,17 +207,21 @@ export default {
     refreshData() {
 
       this.tableData = [];
-      this.currentRow = {};
-      this.z_get("api/userinfo", { condition: this.condition })
+      //this.currentRow = {};
+      // var list=[];
+      // list.push(this.condition)
+
+      this.z_get("api/userinfo/list", { condition: this.condition})
         .then(res => {
           
           this.tableData = res.data;
+         
         })
         .catch(res => {});
     },
 
 
-  addNewUser() {
+    addNewUser() {
           this.userFormVisible = true;
           this.addOrNot = true;
           this.addUserText = "新增用户";
@@ -229,10 +233,11 @@ export default {
         user_type: "",
         status:"",
         emp_id:"",
+        c_id:"1",
 
+    }
         
-      
-    }},
+    },
     //重置表单
     refreshForm() {
       this.$refs.userForm.resetFields();
@@ -252,6 +257,7 @@ export default {
     },
 
     //删除一个
+    //deletelist
     deleteOne(row) {
       this.z_delete("api/userinfo", { data: row })
             .then(res => {

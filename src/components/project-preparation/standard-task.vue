@@ -25,7 +25,7 @@
       </el-dropdown>
     </div>
     <div class="gridTable">
-      <el-table ref="taskTable" style="width: 100%;" :height="menuTableHeight" :data="taskData" tooltip-effect="dark"
+      <zj-table :autoHeight='bottomDivShow' height='100%' ref="taskTable" style="width: 100%;" :data="taskData" tooltip-effect="dark"
         highlight-current-row row-key="st_id" default-expand-all @selection-change="handleSelectionChange"
         @select-all="handleSelectAll" @row-click="handleRowClick" @row-dblclick="handleRowDBClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -46,7 +46,7 @@
             </el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </zj-table>
     </div>
 
     <div class="bottomLayout">
@@ -152,8 +152,7 @@ export default {
           { required: true, message: "请填写任务名称", trigger: "blur" }
         ],
         st_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
-      },
-      menuTableHeight: 0
+      }
     };
   },
   components: {
@@ -177,9 +176,6 @@ export default {
       if (val) {
         this.selectDept();
       }
-    },
-    bottomDivShow() {
-      this.resizeTable();
     }
   },
   methods: {
@@ -424,19 +420,9 @@ export default {
           }
         }
       }
-    },
-    //重新计算table高度
-    resizeTable() {
-      this.menuTableHeight = 0;
-      let that = this;
-      this.$nextTick(function() {
-        let h = that.$refs.taskTable.$el.parentNode.offsetHeight;
-        that.menuTableHeight = h;
-      });
     }
   },
   mounted() {
-    this.resizeTable();
     this.refreshData();
     this.selectDept();
   }

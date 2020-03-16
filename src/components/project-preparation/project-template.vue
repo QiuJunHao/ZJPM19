@@ -33,8 +33,8 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="menuTableHeight"
-            :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
+          <zj-table :autoHeight='bottomDivShow' height='100%' ref="templateTable" v-loading="loading"
+            style="width:100%;" :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
             @selection-change="handleSelectionChange" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <el-table-column prop="pt_name" label="模板名称" align="center" width="120" show-overflow-tooltip>
@@ -63,7 +63,7 @@
                 </el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </zj-table>
         </div>
         <div class="bottomLayout">
           <el-tabs v-model="activeName" :style="{height:bottomDivShow?'310px':'50px'}">
@@ -286,14 +286,8 @@ export default {
       activeName: "first",
       bottomDivShow: false,
       itemModelList: [],
-      itemModel: {},
-      menuTableHeight: 0
+      itemModel: {}
     };
-  },
-  watch: {
-    bottomDivShow() {
-      this.resizeTable();
-    }
   },
   methods: {
     ...mapMutations("navTabs", ["addBreadCrumb"]),
@@ -654,19 +648,9 @@ export default {
         }
       });
       this.addBreadCrumb("project-preparation/template-task");
-    },
-    //重新计算table高度
-    resizeTable() {
-      this.menuTableHeight = 0;
-      let that = this;
-      this.$nextTick(function() {
-        let h = that.$refs.templateTable.$el.parentNode.offsetHeight;
-        that.menuTableHeight = h;
-      });
     }
   },
   mounted() {
-    this.resizeTable();
     this.refreshClassData();
     this.refreshTemplateData();
   }

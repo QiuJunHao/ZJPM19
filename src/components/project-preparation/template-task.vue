@@ -50,7 +50,7 @@
       </el-dropdown>
     </div>
     <div class="gridTable">
-      <el-table ref="taskTable" style="width: 100%;" :height="menuTableHeight" :data="taskData" tooltip-effect="dark"
+      <zj-table :autoHeight='bottomDivShow' height='100%' ref="taskTable" style="width: 100%;" :data="taskData" tooltip-effect="dark"
         highlight-current-row row-key="tt_no" default-expand-all @selection-change="handleSelectionChange"
         @select-all="handleSelectAll" @row-click="handleRowClick" @row-dblclick="handleRowDBClick">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -71,7 +71,7 @@
             </el-button>
           </template>
         </el-table-column>
-      </el-table>
+      </zj-table>
     </div>
     <div class="bottomLayout">
       <el-tabs v-model="activeName" :style="{height:bottomDivShow?'300px':'50px'}">
@@ -229,7 +229,6 @@ export default {
         ],
         tt_period: [{ required: true, message: "请填写工期", trigger: "blur" }]
       },
-      menuTableHeight: 0,
       btnShow: false
     };
   },
@@ -258,11 +257,6 @@ export default {
           return "详细";
           break;
       }
-    }
-  },
-  watch: {
-    bottomDivShow() {
-      this.resizeTable();
     }
   },
   computed: {
@@ -674,19 +668,9 @@ export default {
         name: "project-preparation/project-template"
       });
       this.addBreadCrumb("project-preparation/project-template");
-    },
-    //重新计算table高度
-    resizeTable() {
-      this.menuTableHeight = 0;
-      let that = this;
-      this.$nextTick(function() {
-        let h = that.$refs.taskTable.$el.parentNode.offsetHeight;
-        that.menuTableHeight = h;
-      });
     }
   },
   mounted() {
-    this.resizeTable();
     this.refreshTemplateData();
     if (this.$route.params.templateId) {
       this.selectTemplateId = this.$route.params.templateId;

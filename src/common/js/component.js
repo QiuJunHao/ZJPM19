@@ -1,6 +1,9 @@
 import Vue from 'vue';
-import { Form } from 'element-ui';
+import { Form, Table } from 'element-ui';
 
+/*
+*带UpdateColumn的el-table
+*/
 Vue.component('zj-form', {
     mixins: [Form],
     props: {
@@ -19,13 +22,6 @@ Vue.component('zj-form', {
                 }
             }
         },
-        // model: {
-        //     deep: true,
-        //     immediate: true,
-        //     handler(val, oldval) {
-        //         this.getUpdateColumns();
-        //     }
-        // }
     },
     data() {
         return {
@@ -33,28 +29,60 @@ Vue.component('zj-form', {
             updateColumns: null,
         }
     },
-    computed:{
-        UpdateColumns:{
-            get:function(){
+    computed: {
+        UpdateColumns: {
+            get: function () {
                 return this.getUpdateColumns();
             }
         }
     },
     methods: {
         getUpdateColumns() {
-            this.updateColumns = null;
+            this.updateColumns = [];
             Object.keys(this.comparativeData).forEach(key => {
                 if (key == 'children') return;
                 if (key == 'UpdateColumns') return;
                 if (this.model[key] != this.comparativeData[key]) {
-                    if(this.updateColumns == null) this.updateColumns = [];
                     this.updateColumns.push(key);
                 }
             });
             return this.updateColumns;
         }
+    }
+})
+
+/*
+*外层flex布局下可以自动高度的el-table,必须定义height属性
+*/
+Vue.component('zj-table', {
+    mixins: [Table],
+    props: {
+        autoHeight: {
+            type: Boolean,
+            default: false
+        },
     },
-    mounted(){
-        //this.comparativeData = JSON.parse(JSON.stringify(this.model));
+    watch: {
+        autoHeight: {
+            deep: true,
+            handler() {
+                this.resizeTable();
+            }
+        },
+    },
+    methods: {
+        resizeTable() {
+            this.layout.setHeight(0);
+            //this.doLayout();
+            let that = this;
+            this.$nextTick(function () {
+                let h = that.$el.parentNode.offsetHeight;
+                that.layout.setHeight(h);
+                //that.doLayout();
+            });
+        }
+    },
+    mounted() {
+        this.resizeTable();
     }
 })

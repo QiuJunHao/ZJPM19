@@ -37,7 +37,7 @@
         <el-button type="primary" size="small">导入</el-button>
       </div>
 
-      <el-table :data="tableData" height="680px"  border style="width:100% "  row-key="c_no" tooltip-effect="dark">
+      <el-table :data="tableData" height="100%"  border style="width:100% "  row-key="c_no" tooltip-effect="dark">
         <el-table-column type="index" label="序号" width="120" align="center">
         </el-table-column>
         <el-table-column

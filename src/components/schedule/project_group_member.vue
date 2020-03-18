@@ -16,10 +16,10 @@
         highlight-current-row border @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55" align="center"></el-table-column>  -->
         <el-table-column type="index" label="序号" width="55" align="center" sortable></el-table-column>
-        <el-table-column prop="emp_id" label="人员名称" align="center" width="200">
+        <el-table-column prop="emp_id" label="人员" align="center" width="200">
           <template slot-scope="scope">{{scope.row.emp_id | renderFilter(empDataFilter)}}</template>
         </el-table-column>
-        <el-table-column prop="dept_id" label="所属部门" align="center" width="220">
+        <el-table-column prop="dept_id" label="部门" align="center" width="220">
           <template slot-scope="scope">{{scope.row.dept_id | renderFilter(deptDataFilter)}}</template>
         </el-table-column>
         <el-table-column prop="pgm_starttime" label="进入时间" align="center" width="220"></el-table-column>
@@ -40,13 +40,13 @@
       <zj-form :model="memberModel" label-width="100px" ref="memberForm" :rules="add_rules" size="small"
         :newDataFlag='addEmpVisiable'>
         <el-form-item label="人员" prop="emp_id">
-          <el-select class="formItem" v-model="memberModel.emp_id" placeholder="请选择人员">
+          <el-select :disabled="!addOrNot" class="formItem" v-model="memberModel.emp_id" placeholder="请选择人员">
             <el-option v-for="item in empDataFilter" :key="item.value" :label="item.display" :value="item.value">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="部门" prop="dept_id">
-          <el-select class="formItem" v-model="memberModel.dept_id" placeholder="请选择部门">
+        <el-form-item  label="部门" prop="dept_id">
+          <el-select :disabled="!addOrNot" class="formItem" v-model="memberModel.dept_id" placeholder="请选择部门">
             <el-option v-for="item in deptDataFilter" :key="item.value" :label="item.display" :value="item.value">
             </el-option>
           </el-select>

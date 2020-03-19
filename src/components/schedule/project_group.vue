@@ -3,12 +3,13 @@
     <div style="margin-bottom:10px;">
       <span>选择项目：</span>
 
-      <!-- <el-select size="small" v-model="selectProjectId" placeholder="请选择项目" @change="selProject">
+      <el-select size="small" v-model="selectProjectId" placeholder="请选择项目" @change="selProject">
         <el-option v-for="item in projectData" :key="item.p_no"
-          :label="renderFilter(item.pc_no,classFilter)" :value="item.p_no"></el-option>
+          :label="renderFilter(item.p_no,classFilter)" :value="item.p_no"></el-option>
+            <!-- <el-option v-for="item in classFilter" :key="item.value" :label="item.display" :value="item.value">
+            </el-option> -->
       </el-select>
-
-      <el-button icon="el-icon-arrow-left" size="small" style="float:right;" v-if="btnShow" @click="toProject">返回项目模板
+      <!-- <el-button icon="el-icon-arrow-left" size="small" style="float:right;" v-if="btnShow" @click="toProject">返回项目模板
       </el-button> -->
     </div>
     <div class="tbar">
@@ -153,12 +154,12 @@ export default {
 
   filters: {},
   methods: {
-    ...mapMutations("navTabs", ["addBreadCrumb"]),
+    //...mapMutations("navTabs", ["addBreadCrumb"]),
     refreshProjectData() {
       this.projectData = [];
       this.z_get("api/project")
         .then(res => {
-          this.classFilter = res.dict.pc_no;
+          this.classFilter = res.dict.p_no;
           this.projectData = res.data;
         })
         .catch(res => {});
@@ -169,14 +170,14 @@ export default {
       this.tableData = [];
       this.currentRow = {};
       this.bottomDivShow = false;
-      // this.z_get("api/project_group/treeList", {
-      //   //pc_no: this.selectProjectId,
-      //   condition: this.condition
-      // })
-      this.z_get("api/project_group/treeList")
+      this.z_get("api/project_group/treeList", {
+        p_no: this.selectProjectId,
+        condition: this.condition
+      })
+      // this.z_get("api/project_group/treeList")
         .then(res => {
           this.postDataFilter = res.dict.wp_id;
-          //this.classFilter = res.dict.pc_no;
+          // this.classFilter = res.dict.p_no;
           this.tableData = res.data;
         })
         .catch(res => {});
@@ -241,6 +242,7 @@ export default {
       }
       this.project_groupModel = {
         group_id: 0,
+        p_no: this.selectProjectId,
         wp_id: "",
         group_pid: group_pid,
         group_name: "",

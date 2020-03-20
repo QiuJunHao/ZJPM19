@@ -4,9 +4,9 @@
       <div class="topLayout">
         <div class="tbar">
           <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
-          <el-input @keyup.enter.native="refreshData" placeholder="请输出物料类型名称" v-model="condition"
-            style="width:320px;">
-            <el-button @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
+          <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输出物料类型名称" v-model="condition"
+            style="width:240px;">
+            <el-button size="small" @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
           </el-input>
           <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewTaskShow('root')">新增物料类型</el-button>
 
@@ -25,13 +25,13 @@
         </div>
         <div class="gridTable">
           <el-table ref="itemTypeTable"  style="width: 100%" :data="itemTypeData" tooltip-effect="dark"
-            highlight-current-row row-key="it_id" default-expand-all @selection-change="handleSelectionChange"
+            highlight-current-row border row-key="it_id" default-expand-all @selection-change="handleSelectionChange"
             @select-all="handleSelectAll" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
             <!-- <el-table-column prop="it_id" label="物料类型编号" align="center" width="150"></el-table-column> -->
-            <el-table-column prop="it_name" label="物料类型名称" align="center" width="150"></el-table-column>
-            <el-table-column prop="it_code" label="it_code" align="center" width="480"></el-table-column>
-            <el-table-column label="操作" width="150" prop="handle">
+            <el-table-column prop="it_name" label="物料类型名称" align="left" width="200" ></el-table-column>
+            <el-table-column prop="it_note" label="说明" align="center" width="450"></el-table-column>
+            <el-table-column label="操作" width="154" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>
@@ -45,7 +45,7 @@
       </div>
     </div>
     <el-dialog width="500px" :title="addTaskText" :close-on-click-modal="false" :visible.sync="addTaskVisiable"
-      top="5vh" @closed="refreshForm">
+       @closed="refreshForm">
       <el-form :model="itemTypeModel" label-width="120px" ref="taskForm" :rules="add_rules">
 
         <!-- <el-form-item label="项目类型编号" prop="it_id">
@@ -58,10 +58,14 @@
           </el-input>
         </el-form-item>
 
-        <el-form-item label="it_code">
-          <el-input class="formItem"  v-model="itemTypeModel.it_code" placeholder="it_code">
+        <el-form-item label="备注">
+          <el-input class="formItem" type="textarea" :rows="4" v-model="itemTypeModel.it_note" placeholder="备注信息">
           </el-input>
         </el-form-item>
+        <!-- <el-form-item label="it_code">
+          <el-input class="formItem"  v-model="itemTypeModel.it_code" placeholder="it_code">
+          </el-input>
+        </el-form-item> -->
 
         <el-form-item style="text-align:center;margin-right:100px;">
           <el-button @click="addTaskVisiable = false">取&nbsp;&nbsp;消</el-button>
@@ -140,7 +144,8 @@ export default {
         it_id: 1,
         it_pid: it_pid,
         it_name: "",
-        it_code: ""
+        it_code: "",
+        it_note:""
       };
       this.addOrNot = true;
       this.addTaskVisiable = true;
@@ -325,12 +330,19 @@ export default {
 
 <style scoped>
 .item_type {
-  width: 1100px;
+  width: 900px;
+}
+
+.tbar {
+  margin-bottom: 10px;
+  padding-left: 10px;
 }
 .formItem {
   width: 300px;
-  /* margin-left: 55px; */
 }
 
+.gridTable {
+  flex: 1;
+}
 
 </style>

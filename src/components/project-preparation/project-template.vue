@@ -33,13 +33,14 @@
           </el-button>
         </div>
         <div class="gridTable">
-          <el-table ref="templateTable" v-loading="loading" style="width:100%;" :height="bottomDivShow?'250px':'560px'"
-            :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
+          <zj-table :autoHeight='bottomDivShow' height='100%' ref="templateTable" v-loading="loading"
+            style="width:100%;" :data="projectTemplateData" tooltip-effect="dark" highlight-current-row border
             @selection-change="handleSelectionChange" @row-click="handleRowClick">
             <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="pt_name" label="模板名称" align="center" width="100"></el-table-column>
+            <el-table-column prop="pt_name" label="模板名称" align="center" width="120" show-overflow-tooltip>
+            </el-table-column>
             <el-table-column prop="pt_note" label="模板说明" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="pc_no" label="所属分类" align="center" width="120" sortable>
+            <el-table-column prop="pc_no" label="所属分类" align="center" width="150" sortable show-overflow-tooltip>
               <template slot-scope="scope">{{scope.row.pc_no | renderFilter(classFilter)}}</template>
             </el-table-column>
             <el-table-column prop="create_user" label="创建人" align="center" width="100"></el-table-column>
@@ -62,12 +63,12 @@
                 </el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </zj-table>
         </div>
         <div class="bottomLayout">
-          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'360px':'50px'}">
+          <el-tabs v-model="activeName" :style="{height:bottomDivShow?'310px':'50px'}">
             <el-tab-pane label="模板产品" name="first">
-              <div v-if="bottomDataShow && bottomDivShow">
+              <div v-if="bottomDivShow">
                 <div class="tbar">
                   <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="searchProduct"></el-button>
                   <el-input size="small" @keyup.enter.native="refreshProductData" placeholder="请输入物料名称"
@@ -83,12 +84,13 @@
                   </el-button>
                 </div>
                 <div class="gridTable">
-                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="250" :data="productData"
+                  <el-table ref="productTable" v-loading="loading3" style="width:100%;" height="200" :data="productData"
                     tooltip-effect="dark" highlight-current-row border @selection-change="handleSelectionChange2">
                     <el-table-column type="selection" width="55" align="center"></el-table-column>
                     <el-table-column type="index" width="40" align="center">
                     </el-table-column>
-                    <el-table-column prop="item_name" label="物料名称" align="center" width="200"></el-table-column>
+                    <el-table-column prop="item_name" label="物料名称" align="center" width="200" show-overflow-tooltip>
+                    </el-table-column>
                     <el-table-column prop="item_no" label="物料编码" align="center" width="130"></el-table-column>
                     <el-table-column prop="pti_quantity" label="数量" align="center" width="90"></el-table-column>
                     <el-table-column prop="item_unit" label="单位" align="center" width="100"></el-table-column>
@@ -116,7 +118,7 @@
     </el-container>
 
     <!-- 添加/编辑模板 -->
-    <el-dialog v-if="addTemplateVisible" v-dialogDrag width="450px" :title="addTemplateText"
+    <el-dialog v-if="addTemplateVisible" v-dialogDrag width="450px" :title="addOrNot?'新增模板':'编辑模板'"
       :close-on-click-modal="false" :visible.sync="addTemplateVisible">
       <zj-form size="small" :newDataFlag='addTemplateVisible' :model="templateModel" label-width="100px"
         ref="templateForm" :rules="add_rules">
@@ -212,8 +214,8 @@
     </el-dialog>
 
     <!-- 选择/修改物料 -->
-    <el-dialog v-if="selectItemVisible" v-dialogDrag width="450px" :title="additemText" :close-on-click-modal="false"
-      :visible.sync="selectItemVisible">
+    <el-dialog v-if="selectItemVisible" v-dialogDrag width="450px" :title="addOrNot?'新增模板产品':'编辑模板产品'"
+      :close-on-click-modal="false" :visible.sync="selectItemVisible">
       <zj-form size="small" :newDataFlag='selectItemVisible' :model="itemModel" label-width="100px" ref="itemForm"
         :rules="addItem_rules">
         <el-form-item label="需求数量" prop="pti_quantity">
@@ -265,8 +267,6 @@ export default {
       addTemplateVisible: false,
       addProductVisible: false,
       selectItemVisible: false,
-      addTemplateText: "",
-      additemText: "",
       templateModel: {},
       add_rules: {
         pc_no: [
@@ -284,7 +284,6 @@ export default {
       },
       addOrNot: true,
       activeName: "first",
-      bottomDataShow: false,
       bottomDivShow: false,
       itemModelList: [],
       itemModel: {}
@@ -295,6 +294,7 @@ export default {
     refreshTemplateData() {
       this.loading = true;
       this.refreshBottom();
+      this.currentRow = [];
       this.projectTemplateData = [];
       this.z_get(
         "api/project_template",
@@ -324,7 +324,7 @@ export default {
     refreshBottom() {
       this.conditionProduct = "";
       this.productData = [];
-      this.bottomDataShow = false;
+      this.bottomDivShow = false;
     },
     refreshProductData() {
       this.loading3 = true;
@@ -404,7 +404,6 @@ export default {
         this.refreshProductData();
       }
       this.bottomDivShow = true;
-      this.bottomDataShow = true;
     },
     addNewTemplateShow() {
       this.templateModel = {
@@ -413,7 +412,6 @@ export default {
         pt_name: "",
         pt_note: ""
       };
-      this.addTemplateText = "新增模板";
       this.addOrNot = true;
       this.addTemplateVisible = true;
     },
@@ -423,7 +421,6 @@ export default {
         this.templateModel.pc_no,
         this.classFilter
       );
-      this.addTemplateText = "编辑模板";
       this.addOrNot = false;
       this.addTemplateVisible = true;
     },
@@ -484,12 +481,30 @@ export default {
       }
     },
     onDeleteClick(list) {
-      this.$confirm("是否删除？删除模板将同时删除详情！", "提示", {
+      this.$confirm("是否删除？删除模板将同时删除模板产品与详情！", "提示", {
         confirmButtonText: "是",
         cancelButtonText: "否",
         type: "warning"
       })
-        .then(() => {})
+        .then(() => {
+          this.z_delete("api/project_template/list", { data: list })
+            .then(res => {
+              this.$message({
+                message: "删除成功!",
+                type: "success",
+                duration: 1000
+              });
+              this.refreshTemplateData();
+            })
+            .catch(res => {
+              var msg = res.msg;
+              if (msg.indexOf("FK") > -1) msg = "该数据已被使用，无法删除";
+              this.$alert("删除失败:" + msg, "提示", {
+                confirmButtonText: "确定",
+                type: "error"
+              });
+            });
+        })
         .catch(() => {});
     },
     addProductShow() {
@@ -501,7 +516,6 @@ export default {
     editProductShow(row) {
       this.itemModel = JSON.parse(JSON.stringify(row));
       this.addOrNot = false;
-      this.additemText = "编辑模板产品";
       this.selectItemVisible = true;
     },
     deleteOneProduct(row) {
@@ -531,7 +545,7 @@ export default {
               this.refreshProductData();
             })
             .catch(res => {
-              this.$alert("删除失败!", "提示", {
+              this.$alert("删除失败:" + res.msg, "提示", {
                 confirmButtonText: "确定",
                 type: "error"
               });
@@ -568,7 +582,6 @@ export default {
         });
       } else {
         this.addOrNot = true;
-        this.additemText = "新增物料需求";
         this.selectItemVisible = true;
       }
     },
@@ -670,6 +683,11 @@ export default {
   border-left: 5px solid #eee;
   padding: 0 0 0 10px;
   overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.gridTable {
+  flex: 1;
 }
 .bottomLayout {
   position: relative;

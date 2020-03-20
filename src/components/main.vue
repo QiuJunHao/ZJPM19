@@ -86,25 +86,21 @@
         </div>
       </el-header>
       <el-main class="backTop">
-        <el-card class="mainContentCard" shadow="never">
-          <div class="mainContent">
-            <keep-alive>
-              <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
-            </keep-alive>
-            <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
+        <keep-alive>
+          <router-view class="commonStyle" v-if="$route.meta.keepAlive === true" />
+        </keep-alive>
+        <router-view class="commonStyle" v-if="$route.meta.keepAlive !== true" />
+        <div v-if="activeTabName == 'main'" style="width:100%;" class="commonStyle">
+          <div>
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
+            主页内容
           </div>
-          <div v-if="activeTabName == 'main'">
-            <div style="height:1500px;background-color:white;">
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-              主页内容
-            </div>
-          </div>
-        </el-card>
+        </div>
       </el-main>
     </el-container>
     <el-backtop target=".backTop" :right="30" :visibility-height="20">
@@ -453,24 +449,28 @@ export default {
   background-clip: padding-box;
   border-radius: 50%;
 }
-.mainContentCard {
-  min-height: 100%;
-  background-color: #eee;
-  box-sizing: border-box;
-}
-.mainContent {
-  display: flex;
-}
 .commonStyle {
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px;
   box-sizing: border-box;
   background-color: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  -ms-flex-preferred-size: auto;
+  flex-basis: auto;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 .backTop {
   margin: 0;
-  padding: 0;
-  background-color: #ecf5ef;
+  padding: 10px 20px;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
 }
 </style>
 
@@ -493,7 +493,7 @@ export default {
   color: #20a0ff;
   cursor: pointer;
   font-size: 20px;
-  line-height: 35px;
+  line-height: 35px !important;
 }
 /* 水平菜单样式 */
 .el-menu--horizontal > .el-menu-item,
@@ -559,9 +559,8 @@ export default {
 }
 .el-card__body {
   padding: 10px !important;
-}
-.mainContentCard .el-card__body {
-  padding: 10px 15px !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 .el-dialog__body {
   padding: 20px !important;
@@ -569,9 +568,6 @@ export default {
 .el-table td,
 .el-table th {
   padding: 5px 0 !important;
-}
-.el-badge__content {
-  border: none !important;
 }
 .el-table th.gutter {
   display: table-cell !important;

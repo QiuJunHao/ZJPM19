@@ -20,7 +20,7 @@
         ></el-button>
         <el-input
           @keyup.enter.native="refreshData" v-model="condition"
-          placeholder="请输入客户信息"
+          placeholder="请输入客户名称"
           style="width:300px;"
         >
           <el-button @click="refreshData" slot="append" icon="el-icon-search"
@@ -37,7 +37,7 @@
         <el-button type="primary" size="small">导入</el-button>
       </div>
 
-      <el-table :data="tableData" height="680px"  border style="width:100% "  row-key="c_no" tooltip-effect="dark">
+      <el-table :data="tableData" height="100%"  border style="width:100% "  row-key="c_no" tooltip-effect="dark">
         <el-table-column type="index" label="序号" width="120" align="center">
         </el-table-column>
         <el-table-column
@@ -107,7 +107,7 @@
       <el-input v-model="custModel.c_address" autocomplete="off"></el-input>
     </el-form-item>
 
-    <el-form-item label="客户规模" >
+    <el-form-item label="客户规模"  >
       <el-select v-model="custModel.c_scale" placeholder="请选择客户规模">
         <el-option label="小型客户" value="小型客户"></el-option>
         <el-option label="大型客户" value="大型客户"></el-option>
@@ -157,6 +157,7 @@ export default {
         c_address:[
           {required:true, message:'地址不能为空', trigger:'blur'}
         ],
+      
         c_Importance_level:[
           {required:true, message:'重要程度不能为空', trigger:'change'}
         ],

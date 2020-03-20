@@ -7,28 +7,32 @@
           style="width:300px;">
           <el-button @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
         </el-input>
-        <el-button size="small" type="primary" style="margin-left:10px;" @click="addNewNode('root')">新增根节点</el-button>
-        <el-button size="small" type="primary" :disabled="selection.length!=1" @click="addNewNode('children')">新增子节点
+        <el-button size="small" type="primary" :disabled="selection.length!=1" @click="addNewNode('children')">新增子部门
         </el-button>
         <el-button size="small" type="danger" :disabled="selection.length==0" @click="deleteList">
-          删除选中节点({{selection.length}})
+          删除选中部门({{selection.length}})
+        </el-button>
+        <el-button size="small" @click="UpRecord" v-show="showMoveBtn" :disabled="!currentRow.dept_id">上移</el-button>
+        <el-button size="small" @click="DownRecord" v-show="showMoveBtn" :disabled="!currentRow.dept_id">下移
         </el-button>
         <el-dropdown style="margin-left:10px;">
           <el-button size="small">
             操作<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
-            <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
+            <el-dropdown-item @click.native="expandAll">展开所有</el-dropdown-item>
+            <el-dropdown-item @click.native="collapseAll" divided>收起所有</el-dropdown-item>
+            <el-dropdown-item @click.native="showMoveBtn=!showMoveBtn;" divided>{{showMoveBtn?'隐藏调整排序':'调整排序'}}
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <div class="topContent" style="height:480px;">
         <el-table ref="deptTable" style="width: 100%" height="100%" :data="tableData" tooltip-effect="dark"
           highlight-current-row row-key="dept_id" default-expand-all @selection-change="handleSelectionChange"
-          @select-all="handleSelectAll" @row-click="handleRowClick">
+          @select-all="handleSelectAll" @row-click="handleRowClick" @current-change="handleCurrentChange">
           <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <el-table-column prop="dept_name" label="部门名称" align="center" width="220"></el-table-column>
+          <el-table-column prop="dept_name" label="部门名称" align="left" width="220"></el-table-column>
           <el-table-column prop="dept_type_id" label="类型" align="center" width="150">
             <!-- 是否写死，还是动态查数据  -->
             <template slot-scope="scope">{{scope.row.dept_type_id | deptTypeTrans}}</template>
@@ -36,9 +40,11 @@
           <el-table-column label="说明" prop="dept_note" align="center"></el-table-column>
           <el-table-column label="操作" width="150" prop="handle">
             <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editDeptShow(scope.row)">
+              <el-button v-if="scope.row.dept_pid" type="primary" icon="el-icon-edit" size="mini" circle
+                @click="editDeptShow(scope.row)">
               </el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
+              <el-button v-if="scope.row.dept_pid" type="danger" icon="el-icon-delete" size="mini" circle
+                @click="deleteOne(scope.row)">
               </el-button>
             </template>
           </el-table-column>
@@ -88,12 +94,14 @@ export default {
     return {
       condition: "",
       tableData: [], //表格数据
+      currentRow: {},
       deptDataFilter: [],
       selection: [],
       addDeptVisiable: false,
       deptModel: {},
       addOrNot: true, //是否新增
       addDeptText: "",
+      showMoveBtn: false,
       deptType_options: [
         {
           value: 1,
@@ -102,7 +110,7 @@ export default {
         {
           value: 2,
           label: "小组"
-        }
+        },
       ],
       add_rules: {
         dept_name: [
@@ -141,7 +149,7 @@ export default {
           return "小组";
           break;
       }
-    },
+    }
   },
   methods: {
     refreshData() {
@@ -169,7 +177,7 @@ export default {
       var val = this.tableData;
       var select = false;
       for (var i = 0; i < selection.length; i++) {
-        if (selection[i].st_id == val[0].st_id) {
+        if (selection[i].dept_id == val[0].dept_id) {
           select = true;
           break;
         }
@@ -295,7 +303,7 @@ export default {
               this.refreshData();
             })
             .catch(res => {
-              this.$alert("删除失败" , "提示", {
+              this.$alert("删除失败", "提示", {
                 confirmButtonText: "确定",
                 type: "warning"
               });
@@ -313,7 +321,7 @@ export default {
       }
       return name;
     },
-    //点击行可以切换选中状态   
+    //点击行可以切换选中状态
     handleRowClick(row, column) {
       if (column.property != "handle")
         this.$refs.deptTable.toggleRowSelection(row);
@@ -345,6 +353,85 @@ export default {
           }
         }
       }
+    },
+    handleCurrentChange(row) {
+      this.currentRow = row == null ? {} : row;
+    },
+    UpRecord() {
+      var siblings = this.getTreeSiblings(
+        this.currentRow,
+        this.tableData,
+        "dept_pid",
+        "dept_id"
+      );
+      var index = siblings.indexOf(this.currentRow);
+      if (index == 0) {
+        this.$message({
+          message: "同级中的第一行不能上移",
+          type: "warning",
+          duration: 1000
+        });
+        return;
+      }
+      siblings.splice(index, 1)[0];
+      siblings.splice(index - 1, 0, this.currentRow);
+      for (let i = 0; i < siblings.length; i++) {
+        const item = siblings[i];
+        item.dept_sort = i;
+        item.UpdateColumns = ["dept_sort"];
+      }
+      this.z_put("api/dept/list", siblings)
+        .then(res => {
+          this.$message({
+            message: "上移成功",
+            type: "success",
+            duration: 1000
+          });
+        })
+        .catch(res => {
+          this.$alert("上移失败" + res.msg, "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
+    },
+    DownRecord() {
+      var siblings = this.getTreeSiblings(
+        this.currentRow,
+        this.tableData,
+        "dept_pid",
+        "dept_id"
+      );
+      var index = siblings.indexOf(this.currentRow);
+      if (index == siblings.length - 1) {
+        this.$message({
+          message: "同级中的最后一行不能下移",
+          type: "warning",
+          duration: 1000
+        });
+        return;
+      }
+      siblings.splice(index, 1)[0];
+      siblings.splice(index + 1, 0, this.currentRow);
+      for (let i = 0; i < siblings.length; i++) {
+        const item = siblings[i];
+        item.dept_sort = i;
+        item.UpdateColumns = ["dept_sort"];
+      }
+      this.z_put("api/dept/list", siblings)
+        .then(res => {
+          this.$message({
+            message: "下移成功",
+            type: "success",
+            duration: 1000
+          });
+        })
+        .catch(res => {
+          this.$alert("下移失败" + res.msg, "提示", {
+            confirmButtonText: "确定",
+            type: "error"
+          });
+        });
     }
   },
   mounted() {

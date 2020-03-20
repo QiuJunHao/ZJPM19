@@ -49,20 +49,6 @@ function downLoadFile(url) {
     }
 };
 
-/*
-*多维数组数组扁平化
-*/
-function arrayChildrenFlatten(array, result) {
-    for (var i = 0; i < array.length; i++) {
-        var item = array[i];
-        result.push(item);
-        if (item.children && item.children.length > 0) {
-            result = arrayChildrenFlatten(item.children, result);
-        }
-    }
-    return result;
-}
-
 function eachParent(node, tree_data, parent_prop, child_prop){
     if(node[parent_prop]==null)return null;
     for (let i = 0; i < tree_data.length; i++) {
@@ -92,6 +78,5 @@ function getTreeSiblings(node, tree_data, parent_prop, child_prop){
 export{
     downLoadFile,
     getTreeParent,
-    getTreeSiblings,
-    arrayChildrenFlatten
+    getTreeSiblings
 }

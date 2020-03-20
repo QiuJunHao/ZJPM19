@@ -326,6 +326,6 @@ export default {
 }
 .rightContent {
   float: right;
-  width: 69%;
+  width: 70%;
 }
 </style>

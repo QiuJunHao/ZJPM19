@@ -1,6 +1,6 @@
 <template>
   <div class="work_post">
-    
+    <div class="topLayout">
       <div class="tbar">
         <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="search"></el-button>
         <el-input size="small" @keyup.enter.native="refreshData" placeholder="请输入岗位名称" v-model="condition" clearable
@@ -8,14 +8,14 @@
           <el-button size="small" @click="refreshData" slot="append" icon="el-icon-search">搜索</el-button>
         </el-input>
         <el-button type="primary" size="small" style="margin-left:10px;" @click="addNewWorkPost()">新增岗位</el-button>
-       <el-button type="danger" size="small" :disabled="selection.length==0" @click="deleteList">删除选中岗位({{selection.length}})
-        </el-button>
+        <!-- <el-button type="danger" :disabled="selection.length==0" @click="deleteList">删除选中岗位({{selection.length}}) -->
+        <!-- </el-button> -->
       </div>
       <div class="gridTable">
-        <el-table ref="workPostTable" style="width: 100%;" :height="menuTableHeight" :data="wpData" tooltip-effect="dark"
+        <el-table ref="tgtTable" style="width: 100%;" height="450px" :data="wpData" tooltip-effect="dark"
           highlight-current-row row-key="wp_id" default-expand-all @selection-change="handleSelectionChange"
           @select-all="handleSelectAll" @row-click="handleRowClick">
-          <el-table-column type="selection" width="55" align="center"></el-table-column> 
+          <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->          
           <el-table-column prop="wp_id" label="序号" align="left" width="130" sortable></el-table-column>
           <el-table-column prop="wp_name" label="岗位名称" align="left" width="190" sortable></el-table-column>
           <el-table-column prop="wp_type" label="岗位类型" align="left" width="190" sortable>
@@ -32,7 +32,7 @@
           </el-table-column>
         </el-table>
       </div>
-  
+    </div>
     <el-dialog v-if="addwpVisiable" v-dialogDrag width="450px" :title="addwpText" :close-on-click-modal="false"
       :visible.sync="addwpVisiable">
       <zj-form :model="workPostModel" label-width="100px" ref="workPostForm" :rules="add_rules" size="small"
@@ -89,8 +89,7 @@ export default {
       add_rules: {
         wp_name: [{ required: true, message: "请填写岗位名称", trigger: "blur" }],     
         wp_type: [{ required: true, message: "请选择岗位类型", trigger: "change" }]       
-      },
-      menuTableHeight: 0
+      }
     };
   },
   filters: {
@@ -279,20 +278,10 @@ export default {
     //点击行可以切换选中状态
     handleRowClick(row, column) {
       if (column.property != "handle")
-        this.$refs.workPostTable.toggleRowSelection(row);
-    },
-        //重新计算table高度
-    resizeTable() {
-      this.menuTableHeight = 0;
-      let that = this;
-      this.$nextTick(function() {
-        let h = that.$refs.workPostTable.$el.parentNode.offsetHeight;
-        that.menuTableHeight = h;
-      });
+        this.$refs.tgtTable.toggleRowSelection(row);
     }
   },
   mounted() {
-    this.resizeTable();
     this.refreshData();
   }
 };
@@ -302,9 +291,7 @@ export default {
 .work_post {
   width: 1100px;
 }
-.gridTable {
-  flex: 1;
-}
+
 .formItem {
   width: 300px;
 }

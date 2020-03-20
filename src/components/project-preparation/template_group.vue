@@ -1,41 +1,50 @@
 <template>
   <div class="template_group_waiting">
-    <el-container>
-      <el-aside width="220px" style="padding-right:10px;">
+    <el-container style="height: 600px;">
+      <el-aside class="tgaside" width="220px" style="padding-right:10px;">
         <el-card style="height:100%;box-sizing:border-box;" shadow="never">
           <div slot="header">
-            <span>模板分类</span>
-            <el-dropdown :hide-on-click="false" style="float: right;margin-left:10px;">
-              <el-button icon="el-icon-setting" circle size="mini" title="设置" />
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="addNewTemplateTypeGroup">
-                  新增模板分类
-                </el-dropdown-item>
-                <!-- <el-dropdown-item @click.native="editTempGroupTypeShow(scope.currentRow)"> -->
-                <el-dropdown-item @click.native="editTempGroupTypeShow(selectClass)">
-                  编辑模板类型
-                </el-dropdown-item>
-                <el-dropdown-item @click.native="onDeleteOneTempGroupType(selectClass)">
-                  删除模板类型
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-            <el-button style="float: right; " icon="el-icon-refresh" title="刷新" size="mini" circle
-              @click="refreshClass"></el-button>
-          </div>
-          <div style="padding-bottom:5px;">
-            <el-input size="mini" @keyup.enter.native="refreshClass" placeholder="筛选模板类型" v-model="condition" clearable
-              style="width:180px;">
-              <el-button size="mini" @click="refreshClass" slot="append" icon="el-icon-search">
+            <el-row>
+              <span>模板分类</span>
+              <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
+
+              <el-dropdown :hide-on-click="false" style="margin-left: 70px">
+                <span class="el-dropdown-link">
+                  <i class="el-icon-setting"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native="addNewTemplateTypeGroup">
+                    新增模板分类
+                  </el-dropdown-item>
+                  <!-- <el-dropdown-item @click.native="editTempGroupTypeShow(scope.currentRow)"> -->
+                  <el-dropdown-item @click.native="editTempGroupTypeShow(selectClass)">
+                    编辑模板类型
+                  </el-dropdown-item>
+                  <el-dropdown-item @click.native="onDeleteOneTempGroupType(selectClass)">
+                    删除模板类型
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+
+              <!-- <el-button style="margin-left=0" type="primary" size="mini" icon="el-icon-folder-add" circle
+                @click="addNewTemplateTypeGroup">
+              </el-button> -->
+              <!-- <el-button type="primary" icon="el-icon-edit" size="mini" circle
+                @click="editTempGroupTypeShow(scope.row)">
               </el-button>
-            </el-input>
+              <el-button type="danger" size="mini" icon="el-icon-delete" circle
+                @click="onDeleteOneTempGroupType(scope.row)">
+              </el-button> -->
+            </el-row>
           </div>
+
           <div highlight-current @click="refreshClass"
             style="width:100%;user-select:none;height:30px;line-height: 30px;">
             <el-tooltip effect="dark" content="点击显示所有模板信息" placement="left">
               <span style="margin-left:3px;"><img style="width:16px;" src="../../assets/img/tag.png" /> 全部分类</span>
             </el-tooltip>
           </div>
+          <!-- <el-button type="text" @click="refreshTemplateData()" style="width:100%;user-select:none;height:30px;line-height: 30px;"><img style="width:16px;" src="../../assets/img/tag.png" />全部分类</el-button> -->
           <el-tree :data="tgtData" node-key="tgt_id" ref="tree" default-expand-all :expand-on-click-node="false"
             highlight-current class="classTree">
             <div slot-scope="{node, data}" style="width:100%;user-select:none;height:30px;line-height: 30px;"
@@ -62,113 +71,116 @@
           </el-button>
         </template> -->
       </el-aside>
-      <el-main class="mainContent">
-        <div class="tbar">
-          <el-button icon="el-icon-refresh" title="刷新此分类下模板" size="mini" circle @click="refreshTemplateData">
-          </el-button>
-          <el-input disabled title="此功能暂不可用" size="small" @keyup.enter.native="refreshTemplateData"
-            placeholder="请输入岗位名称" v-model="condition" clearable style="width:250px;">
-            <el-button title="此功能暂不可用" disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索
+      <el-container>
+        <el-main style="border-left:10px solid #eee;padding:0 0 0 10px;">
+          <div class="tbar">
+            <el-button icon="el-icon-refresh" title="刷新" size="mini" circle @click="refreshClass"></el-button>
+            <el-input disabled size="small" @keyup.enter.native="refreshTemplateData" placeholder="请输入模板名称"
+              v-model="condition" clearable style="width:250px;">
+              <el-button disabled @click="refreshTemplateData" slot="append" icon="el-icon-search">搜索</el-button>
+            </el-input>
+            <el-button type="primary" size="small" style="margin-left:10px;" :disabled="!selectClass.tgt_id"
+              @click="addNewTemplateGroup('root')">新增根节点
             </el-button>
-          </el-input>
-          <el-button title="请选择模板类型" type="primary" size="small" style="margin-left:10px;"
-            :disabled="!selectClass.tgt_id" @click="addNewTemplateGroup('root')">新增根节点
-          </el-button>
-          <el-button title="请选择根节点" type="primary" size="small" :disabled="!currentRow.tg_id||!selectClass.tgt_id"
-            @click="addNewTemplateGroup('children')">新增子节点
-          </el-button>
-          <el-button title="请勾选要删除的模板" type="danger" size="small" :disabled="selection.length==0" @click="deleteList">
-            删除选中模板({{selection.length}})
-          </el-button>
-          <el-dropdown style="margin-left:10px;">
-            <el-button size="small">
-              操作<i class="el-icon-arrow-down el-icon--right"></i>
+            <el-button type="primary" size="small" v-if="currentRow.tg_id && selectClass.tgt_id"
+              @click="addNewTemplateGroup('children')">新增子节点
             </el-button>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
-              <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
-        <div class="gridTable">
-          <el-table ref="tgTable" v-loading="loading" style="width: 100%;" :height="menuTableHeight"
-            :data="TemplateGroupData" tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all
-            border @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
-            <el-table-column type="selection" width="55" align="center"></el-table-column>
-            <!-- <el-table-column prop="wp_id" label="组织岗位名称" align="left" header-align="center" width="280"> -->
-            <el-table-column prop="wp_id" label="组织岗位名称" align="left" width="280">
-              <template slot-scope="scope">{{scope.row.wp_id | renderFilter(PostDataFilter)}}</template>
-            </el-table-column>
-            <el-table-column prop="tg_node_type" label="节点类型" align="left" width="120">
-              <template slot-scope="scope">{{scope.row.tg_node_type | stTypeTrans}}</template>
-            </el-table-column>
-            <el-table-column prop="tg_note" label="说明" align="left" show-overflow-tooltip></el-table-column>
-            <el-table-column label="操作" width="140" prop="handle">
-              <template slot-scope="scope">
-                <el-button type="primary" icon="el-icon-edit" size="mini" circle
-                  @click="editTemplateGroupShow(scope.row)">
-                </el-button>
-                <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-main>
+            <!-- <el-button type="danger" :disabled="selection.length==0" @click="deleteList">删除选中组织结构模板({{selection.length}})
+        </el-button> -->
+            <el-dropdown style="margin-left:10px;">
+              <el-button size="small">
+                操作<i class="el-icon-arrow-down el-icon--right"></i>
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native="expandAll">展开所有节点</el-dropdown-item>
+                <el-dropdown-item @click.native="collapseAll" divided>折叠所有节点</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <div>
+            <el-table ref="tgTable" v-loading="loading" style="width: 100%;" height="450px" :data="TemplateGroupData"
+              tooltip-effect="dark" highlight-current-row row-key="tg_id" default-expand-all border
+              @selection-change="handleSelectionChange" @select-all="handleSelectAll" @row-click="handleRowClick">
+              <el-table-column type="selection" width="55" align="center"></el-table-column>
+              <el-table-column prop="wp_id" label="组织岗位名称" align="center" width="280">
+                <template slot-scope="scope">{{scope.row.wp_id | renderFilter(PostDataFilter)}}</template>
+              </el-table-column>
+              <el-table-column prop="tg_node_type" label="节点类型" align="center" width="120">
+                <template slot-scope="scope">{{scope.row.tg_node_type | stTypeTrans}}</template>
+              </el-table-column>
+              <el-table-column prop="tg_note" label="说明" align="center" show-overflow-tooltip></el-table-column>
+              <el-table-column label="操作" width="140" prop="handle">
+                <template slot-scope="scope">
+                  <el-button type="primary" icon="el-icon-edit" size="mini" circle
+                    @click="editTemplateGroupShow(scope.row)">
+                  </el-button>
+                  <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-main>
+        <!-- 新增/修改模板表单 -->
+        <el-dialog v-if="addgpVisiable" v-dialogDrag width="450px" :title="addgpText" :close-on-click-modal="false"
+          :visible.sync="addgpVisiable">
+          <zj-form size="small" :newDataFlag='addgpVisiable' :model="templateModel" label-width="100px"
+            ref="templateForm" :rules="add_rules">
+            <el-form-item label="岗位名称" prop="wp_id">
+              <el-select v-model="templateModel.wp_id" ref="select_post" placeholder="请选择岗位">
+                <el-option v-for="item in PostDataFilter" :key="item.value" :label="item.display" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="组织模板名称" prop="tg_name">
+              <el-input class="formItem" v-model="templateModel.tg_name" placeholder="请填写组织模板名称">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="节点类型" prop="tg_node_type">
+              <el-select class="formItem" v-model="templateModel.tg_node_type" placeholder="请选择节点类型">
+                <el-option v-for="item in stTypeTrans" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="说明">
+              <el-input class="formItem" type="textarea" :rows="2" v-model="templateModel.tg_note" placeholder="备注信息">
+              </el-input>
+            </el-form-item>
+            <el-form-item style="text-align:center;margin-right:100px;">
+              <el-button size="medium" @click="addgpVisiable = false">取&nbsp;&nbsp;消</el-button>
+              <el-button type="primary" size="medium" @click="onSaveTempClick" style="margin-left:30px;">保&nbsp;&nbsp;存
+              </el-button>
+            </el-form-item>
+          </zj-form>
+        </el-dialog>
+        <!-- 新增/修改模板类型表单 -->
+        <el-dialog width="500px" :title="addgptText" :close-on-click-modal="false" :visible.sync="addgptVisiable"
+          top="5vh" @closed="refreshForm">
+          <el-form :model="templateGroupTypeModel" label-width="100px" ref="templateGroupTypeForm" :rules="add_rules">
+            <!-- <el-form-item label="模板类型编号">
+              <el-input class="formItem" v-model="templateGroupTypeModel.tgt_id" placeholder="系统自动生成" disabled>
+              </el-input>
+            </el-form-item> -->
+            <el-form-item label="模板类型名称">
+              <el-input class="formItem" v-model="templateGroupTypeModel.tgt_name" placeholder="请填写模板类型名称">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="模板类型说明">
+              <el-input class="formItem" type="textarea" :rows="2" v-model="templateGroupTypeModel.tgt_note"
+                placeholder="模板类型说明">
+              </el-input>
+            </el-form-item>
+
+            <el-form-item style="text-align:center;margin-right:100px;">
+              <el-button @click="addgptVisiable = false">取&nbsp;&nbsp;消</el-button>
+              <el-button type="primary" @click="onSaveTempGroupTypeClick" style="margin-left:30px;">保&nbsp;&nbsp;存
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+      </el-container>
+
     </el-container>
-    <!-- 新增/修改模板表单 -->
-    <el-dialog v-if="addgpVisiable" v-dialogDrag width="450px" :title="addOrNot?'新增模板':'编辑模板'"
-      :close-on-click-modal="false" :visible.sync="addgpVisiable">
-      <zj-form size="small" :newDataFlag='addgpVisiable' :model="templateModel" label-width="100px" ref="templateForm"
-        :rules="add_rules">
-        <el-form-item label="岗位名称" prop="wp_id">
-          <el-select v-model="templateModel.wp_id" ref="select_post" placeholder="请选择岗位">
-            <el-option v-for="item in PostDataFilter" :key="item.value" :label="item.display" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="组织模板名称" prop="tg_name">
-          <el-input class="formItem" v-model="templateModel.tg_name" placeholder="请填写组织模板名称">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="节点类型" prop="tg_node_type">
-          <el-select class="formItem" v-model="templateModel.tg_node_type" placeholder="请选择节点类型">
-            <el-option v-for="item in stTypeTrans" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="说明">
-          <el-input class="formItem" type="textarea" :rows="2" v-model="templateModel.tg_note" placeholder="备注信息">
-          </el-input>
-        </el-form-item>
-        <el-form-item style="text-align:center;margin-right:100px;">
-          <el-button size="medium" @click="addgpVisiable = false">取&nbsp;&nbsp;消</el-button>
-          <el-button type="primary" size="medium" @click="onSaveTempClick" style="margin-left:30px;">保&nbsp;&nbsp;存
-          </el-button>
-        </el-form-item>
-      </zj-form>
-    </el-dialog>
-    <!-- 新增/修改模板类型表单 -->
-    <el-dialog :title="addOrNot?'新增模板类型':'编辑模板类型'" :visible.sync="addgptVisiable" v-if="addgptVisiable" v-dialogDrag
-      width="460px">
-      <zj-form size="small" :newDataFlag='addgpVisiable' :model="templateGroupTypeModel" label-width="120px"
-        ref="templateForm" :rules="add_rules">
-        <el-form-item label="模板类型名称" prop="tgt_name">
-          <el-input class="formItem" v-model="templateGroupTypeModel.tgt_name" placeholder="请填写模板类型名称">
-          </el-input>
-        </el-form-item>
-        <el-form-item label="模板类型说明">
-          <el-input class="formItem" type="textarea" :rows="2" v-model="templateGroupTypeModel.tgt_note"
-            placeholder="模板类型说明">
-          </el-input>
-        </el-form-item>
-        <el-form-item style="text-align:center;margin-right:100px;">
-          <el-button @click="addgptVisiable = false">取&nbsp;&nbsp;消</el-button>
-          <el-button type="primary" @click="onSaveTempGroupTypeClick" style="margin-left:30px;">保&nbsp;&nbsp;存
-          </el-button>
-        </el-form-item>
-      </zj-form>
-    </el-dialog>
   </div>
 </template>
 
@@ -191,7 +203,7 @@ export default {
       activeName: "first",
       tgtData: [], //表格数据
       PostDataFilter: [],
-      tgtID: "",
+
       addgptVisiable: false,
       templateGroupTypeModel: {},
       selectClass: {},
@@ -212,10 +224,8 @@ export default {
         wp_id: [{ required: true, message: "请选择岗位", trigger: "change" }],
         tg_node_type: [
           { required: true, message: "请选择节点类型", trigger: "change" }
-        ],
-        tgt_name: [{ required: true, message: "请填写模板类型名称", trigger: "flur" }]
-      },
-      menuTableHeight: 0
+        ]
+      }
     };
   },
   filters: {
@@ -554,7 +564,7 @@ export default {
       this.tgtData = [];
       this.selectClass = {};
       // this.refreshTemplateData();
-      this.z_get("api/template_group_type", { condition: this.condition })
+      this.z_get("api/template_group_type")
         .then(res => {
           this.tgtData = res.data;
         })
@@ -626,91 +636,17 @@ export default {
     },
     //删除一个
     onDeleteOneTempGroupType(row) {
-      // alert(row.tgt_id);
-      // var tgtID = row.tgt_id;
       var list = [];
       list.push(row);
-      // this.onDeleteTempGroupTypeClick(tgtID, list);
       this.onDeleteTempGroupTypeClick(list);
     },
     //删除树
     deleteTempGroupTypeList() {
       if (this.selection.length) {
-        // this.onDeleteTempGroupTypeClick(tgtID, this.selection);
         this.onDeleteTempGroupTypeClick(this.selection);
       }
     },
-
-    // onDeleteTempGroupClick(list) {
-    //   this.$confirm("是否删除？节点下的子节点将一并删除！", "提示", {
-    //     confirmButtonText: "是",
-    //     cancelButtonText: "否",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       this.z_delete("api/template_group_type/list", { data: list })
-    //         .then(res => {
-    //           this.$message({
-    //             message: "模板分类删除成功",
-    //             type: "success",
-    //             duration: 1000
-    //           });
-    //           this.refreshTemplateData();
-    //         })
-    //         .catch(res => {
-    //           this.$alert("模板分类删除失败", "提示", {
-    //             confirmButtonText: "确定",
-    //             type: "error"
-    //           });
-    //         });
-    //     })
-    //     .catch(() => {});
-    // },
-    // onDeleteTempGroupClick(list) {
-    //   this.z_delete("api/template_group_type/list", { data: list })
-    //     .then(res => {
-    //       this.$message({
-    //         message: "模板分类删除成功",
-    //         type: "success",
-    //         duration: 1000
-    //       });
-    //       this.refreshTemplateData();
-    //     })
-    //     .catch(res => {
-    //       this.$alert("模板分类删除失败", "提示", {
-    //         confirmButtonText: "确定",
-    //         type: "error"
-    //       });
-    //     });
-    // },
     onDeleteTempGroupTypeClick(list) {
-      // onDeleteTempGroupTypeClick(tgtID, list) {
-      // this.$confirm("是否删除？该类型下的模板将一并删除", "提示", {
-      //   confirmButtonText: "是",
-      //   cancelButtonText: "否",
-      //   type: "warning"
-      // })
-      //   .then(() => {
-      //     // this.z_delete("api/template_group/TGTlist", { tgtID: tgtID })
-      //     this.z_delete("api/template_group/TGTlist", 9)
-      //       .then(res => {
-      //         this.$message({
-      //           message: "模板删除成功!",
-      //           type: "success",
-      //           duration: 1000
-      //         });
-      //         this.refreshTemplateData();
-      //         this.onDeleteTempGroupClick(list);
-      //         this.alert(tgtID);
-      //       })
-      //       .catch(res => {
-      //         this.$alert("模板删除失败!", "提示", {
-      //           confirmButtonText: "确定",
-      //           type: "error"
-      //         });
-      //       });
-      //   })
-      //   .catch(() => {});
       this.$confirm("是否删除？", "提示", {
         confirmButtonText: "是",
         cancelButtonText: "否",
@@ -720,29 +656,20 @@ export default {
           this.z_delete("api/template_group_type/list", { data: list })
             .then(res => {
               this.$message({
-                message: "模板分类删除成功",
+                message: "删除成功",
                 type: "success",
                 duration: 1000
               });
-              this.refreshClass();
+              this.refreshTemplateData();
             })
             .catch(res => {
-              this.$alert("模板分类删除失败，请先删除该类型下模板", "提示", {
+              this.$alert("删除失败", "提示", {
                 confirmButtonText: "确定",
                 type: "error"
               });
             });
         })
         .catch(() => {});
-    },
-    //重新计算table高度
-    resizeTable() {
-      this.menuTableHeight = 0;
-      let that = this;
-      this.$nextTick(function() {
-        let h = that.$refs.tgTable.$el.parentNode.offsetHeight;
-        that.menuTableHeight = h;
-      });
     },
     openMenu(e) {
       const menuMinWidth = 105;
@@ -765,7 +692,6 @@ export default {
     }
   },
   mounted() {
-    this.resizeTable();
     this.refreshTemplateData();
     this.refreshClass();
   }
@@ -774,22 +700,19 @@ export default {
 
 <style scoped>
 .template_group_waiting {
-  width: 1200px;
+  width: 1100px;
 }
-.mainContent {
-  border-left: 5px solid #eee;
-  padding: 0 0 0 10px;
-  overflow-y: hidden;
-  display: flex;
-  flex-direction: column;
+
+.tgheader {
+  line-height: 60px;
+}
+.tgaside {
+  width: 80px;
 }
 .tbar {
   margin-bottom: 10px;
 }
 .classTree .el-tree-node__content {
   height: 30px;
-}
-.gridTable {
-  flex: 1;
 }
 </style>

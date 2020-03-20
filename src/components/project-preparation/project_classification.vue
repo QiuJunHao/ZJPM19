@@ -31,7 +31,7 @@
             <!-- <el-table-column prop="pc_no" label="项目类型编号" align="center" width="150"></el-table-column> -->
             <el-table-column prop="pc_name" label="项目类型名称" align="center" width="150"></el-table-column>
             <el-table-column prop="pc_note" label="说明" align="center" width="480"></el-table-column>
-            <el-table-column label="操作" width="370" prop="handle">
+            <el-table-column label="操作" width="150" prop="handle">
               <template slot-scope="scope">
                 <el-button type="primary" icon="el-icon-edit" size="mini" circle @click="editTaskShow(scope.row)">
                 </el-button>

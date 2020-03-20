@@ -18,7 +18,6 @@ import './common/js/floatCalculate'
 import './common/js/directive'
 import './common/js/component'
 import  * as commonMethods from "./common/js/commonMethods";
-import  * as validator from "./common/js/validator";
 
 Vue.use(ElementUI);
 Vue.use(Cookies);
@@ -37,8 +36,6 @@ Vue.prototype.z_delete = z_delete;
 Object.keys(commonMethods).forEach(key => {
   Vue.prototype[key] = commonMethods[key];
 })
-//注册全局validator
-Vue.prototype.validator = validator;
 //注册全局filter的同时注册为全局方法
 Object.keys(custom).forEach(key => {
   Vue.filter(key, custom[key]);

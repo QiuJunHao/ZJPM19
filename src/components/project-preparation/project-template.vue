@@ -55,7 +55,7 @@
                   </el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="编辑模板详情" placement="top-start">
-                  <el-button type="primary" icon="el-icon-s-grid" size="mini" circle @click="toDetail(scope.row)">
+                  <el-button type="primary" icon="el-icon-s-grid" size="mini" circle>
                   </el-button>
                 </el-tooltip>
                 <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="deleteOne(scope.row)">
@@ -239,8 +239,6 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
-
 export default {
   data() {
     return {
@@ -291,7 +289,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations("navTabs", ["addBreadCrumb"]),
     refreshTemplateData() {
       this.loading = true;
       this.refreshBottom();
@@ -643,16 +640,6 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val;
       this.refreshItemListData();
-    },
-    //跳转路由
-    toDetail(row) {
-      this.$router.push({
-        name: "project-preparation/template-task",
-        params: {
-          templateId: row.pt_id
-        }
-      });
-      this.addBreadCrumb("project-preparation/template-task");
     }
   },
   mounted() {
@@ -667,7 +654,7 @@ export default {
   width: 1200px;
 }
 .mainContent {
-  border-left: 5px solid #eee;
+  border-left: 10px solid #eee;
   padding: 0 0 0 10px;
   overflow-y: hidden;
 }

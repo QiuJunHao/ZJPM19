@@ -177,25 +177,23 @@ export default {
               });
           } else {
             this.dept_shiftModel.UpdateColumns = this.$refs.deptShiftForm.UpdateColumns;
-            if (this.dept_shiftModel.UpdateColumns) {
-              this.z_put("api/dept_shift_group", this.dept_shiftModel)
-                .then(res => {
-                  this.$message({
-                    message: "编辑成功",
-                    type: "success",
-                    duration: 1000
-                  });
-                  this.refreshData();
-                  this.addDeptShiftVisiable = false;
-                })
-                .catch(res => {
-                  this.$alert("编辑失败", "提示", {
-                    confirmButtonText: "确定",
-                    type: "error"
-                  });
-                  console.log(res);
+            this.z_put("api/dept_shift_group", this.dept_shiftModel)
+              .then(res => {
+                this.$message({
+                  message: "编辑成功",
+                  type: "success",
+                  duration: 1000
                 });
-            }
+                this.refreshData();
+                this.addDeptShiftVisiable = false;
+              })
+              .catch(res => {
+                this.$alert("编辑失败", "提示", {
+                  confirmButtonText: "确定",
+                  type: "error"
+                });
+                console.log(res);
+              });
           }
         } else {
           return false;

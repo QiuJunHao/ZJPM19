@@ -49,34 +49,6 @@ function downLoadFile(url) {
     }
 };
 
-function eachParent(node, tree_data, parent_prop, child_prop){
-    if(node[parent_prop]==null)return null;
-    for (let i = 0; i < tree_data.length; i++) {
-        const item = tree_data[i];
-        if(item[child_prop]==node[parent_prop]){
-            return item;
-        }
-        if(item.children&& item.children.length>0){
-            let p = eachParent(node, item.children, parent_prop);
-            if(p!=null)
-                return p;
-        }
-    }
-    return null;
-};
-//获取树的Parent
-function getTreeParent(node, tree_data, parent_prop, child_prop){
-    return eachParent(node, tree_data, parent_prop, child_prop);
-};
-//获取树的节点的兄弟节点结合
-function getTreeSiblings(node, tree_data, parent_prop, child_prop){
-    let parent = eachParent(node, tree_data, parent_prop, child_prop);
-    if(parent==null)
-        return tree_data;
-    return parent.children;
-}
 export{
-    downLoadFile,
-    getTreeParent,
-    getTreeSiblings
+    downLoadFile
 }
